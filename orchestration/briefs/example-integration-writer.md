@@ -24,7 +24,7 @@ The work is done when each file meets its part below, passes the writing rules a
 
 ## Model and budget
 
-You run on Opus. Your budget is about 150,000 tokens.
+You run on the strongest model. Your budget is about 150,000 tokens.
 
 ## Read before you start
 

@@ -14,12 +14,12 @@ All workers share one workspace folder, with no worktrees. Nobody but the orches
 
 | Worker | Model | Writes these files, and nothing else |
 | --- | --- | --- |
-| Topic worker, B02 | Opus | `content/base/b02-the-beekeeping-year/`, `research/b02-the-beekeeping-year.md`, handoff `orchestration/handoffs/2026-10-06-topic-b02.md` |
-| Topic worker, P02 | Opus | `content/practical/p02-swarm-control/`, `research/p02-swarm-control.md`, handoff `orchestration/handoffs/2026-10-06-topic-p02.md` |
-| Context worker | Opus | `context/association.md`, new files in `context/sources/`, handoff `orchestration/handoffs/2026-10-06-context-association.md` |
-| Portal worker | Opus | The files under `engine/` its brief names, handoff `orchestration/handoffs/2026-10-06-portal-apiary-sheet.md` |
-| Later: facts check | Sonnet | `reviews/facts-2026-10-06-b02-p02.md`, handoff `orchestration/handoffs/2026-10-06-facts-run-02.md` |
-| Later: fix worker | Opus | The topic folders and dossiers its brief names, handoff `orchestration/handoffs/2026-10-06-fix-run-02.md` |
+| Topic worker, B02 | The strongest | `content/base/b02-the-beekeeping-year/`, `research/b02-the-beekeeping-year.md`, handoff `orchestration/handoffs/2026-10-06-topic-b02.md` |
+| Topic worker, P02 | The strongest | `content/practical/p02-swarm-control/`, `research/p02-swarm-control.md`, handoff `orchestration/handoffs/2026-10-06-topic-p02.md` |
+| Context worker | The strongest | `context/association.md`, new files in `context/sources/`, handoff `orchestration/handoffs/2026-10-06-context-association.md` |
+| Portal worker | The strongest | The files under `engine/` its brief names, handoff `orchestration/handoffs/2026-10-06-portal-apiary-sheet.md` |
+| Later: facts check | A smaller one | `reviews/facts-2026-10-06-b02-p02.md`, handoff `orchestration/handoffs/2026-10-06-facts-run-02.md` |
+| Later: fix worker | The strongest | The topic folders and dossiers its brief names, handoff `orchestration/handoffs/2026-10-06-fix-run-02.md` |
 
 A file the table doesn't give you is read-only for you. That covers `content/`, `research/`, `context/`, `curriculum/`, `docs/`, `engine/`, `tools/`, `guide.toml` and `orchestration/`, apart from your own files. If a shared file needs a change, propose it in your handoff.
 

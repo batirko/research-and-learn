@@ -180,7 +180,7 @@ Each of these cost a run to learn.
 research-and-learn/
 ├── README.md            What you get, how to start, what it costs
 ├── AGENTS.md            The operating guide for any agent
-├── CLAUDE.md            Points at AGENTS.md
+├── CLAUDE.md            Points Claude Code at AGENTS.md
 ├── LICENSE              MIT
 ├── guide.toml           Your guide's settings
 ├── docs/
@@ -211,7 +211,8 @@ research-and-learn/
 ├── site/                The built portal
 ├── tools/               The lint and the private-term scan
 ├── example/             A complete small guide on an unrelated subject
-└── .claude/skills/      set-up, scaffold, and the slop pass
+├── .agents/skills/      set-up, scaffold, and the slop pass, where most agents look for skills
+└── .claude/skills       A link to .agents/skills, where Claude Code looks
 ```
 
 **The template ships the method and leaves the identity blank.** Everything under `context/`, `curriculum/`, `content/` and `orchestration/` starts as a template with instructions. The set-up and the scaffold fill them.
@@ -250,7 +251,7 @@ The index lists a repository when four rules hold. This project meets each one b
 | State accumulates | Sources, notes, research, topics, decisions and your reading notes stay in the folder |
 | The output is your work | The guide |
 
-The index has no manual entries. Its crawler finds repositories through GitHub search over name, description and topics. So the description says "Claude Code workspace", the topics include `claude-code` and `agentic-workspace`, and `CLAUDE.md` and `AGENTS.md` sit at the root.
+The index has no manual entries. Its crawler finds repositories through GitHub search over name, description and topics. The workspace runs on any coding agent that reads `AGENTS.md`, so the description leads with that and names Claude Code as one such agent. It keeps the words "Claude Code" and "workspace", the topics keep `claude-code` and `agentic-workspace` beside `agents-md` and `agent-skills`, and `CLAUDE.md` stays at the root as a pointer to `AGENTS.md`. The crawler still finds it, and no other agent's user reads it as Claude-only.
 
 ## Keeping the source guide out
 

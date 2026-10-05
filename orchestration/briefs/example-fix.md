@@ -30,7 +30,7 @@ P02 is at 1,180 words, near its ceiling of 1,200. Every edit to it is word-neutr
 
 ## Model and budget
 
-You run on Opus. Your budget is about 100,000 tokens.
+You run on the strongest model. Your budget is about 100,000 tokens.
 
 ## Read before you start
 

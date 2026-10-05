@@ -25,7 +25,7 @@ B02 rests on the handbook's calendar: check every month it gives for the associa
 
 ## Model and budget
 
-You run on Sonnet. Your budget is about 100,000 tokens, about 50,000 per topic.
+You run on a smaller model. Your budget is about 100,000 tokens, about 50,000 per topic.
 
 Before you start, fetch one public page a topic cites. If the fetch fails, say so, and compare public claims with the writer's dossier instead.
 

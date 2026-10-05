@@ -15,7 +15,7 @@ A **worker** is a subagent or a session that does one job. A **brief** is its in
 
 ## Before you start
 
-Two skills come first: `.claude/skills/set-up/` and `.claude/skills/scaffold/`. Check that both have run:
+Two skills come first: `.agents/skills/set-up/` and `.agents/skills/scaffold/`. Check that both have run:
 
 - `guide.toml` names the guide, the reader and the tiers.
 - `docs/request.md` holds the owner's request and its assumptions.
@@ -225,8 +225,8 @@ Pick the smallest model that can do the job, and set it on every spawn. A subage
 
 | Work | Model |
 | --- | --- |
-| Writing, reviewing, fixing, context work, the portal, the integration pages | The strongest you have: Opus, in Claude Code |
-| The facts check, finding candidate sources, checking links, running the lint and counts | A smaller model: Sonnet, in Claude Code |
+| Writing, reviewing, fixing, context work, the portal, the integration pages | The strongest model your agent offers |
+| The facts check, finding candidate sources, checking links, running the lint and counts | A smaller model: faster and cheaper, from the same family |
 | A model that costs more than the strongest standard one | Only after the owner agrees, and never several at once |
 
 If usage limits bite, build fewer topics. Don't build them on a smaller model.

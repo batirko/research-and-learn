@@ -16,7 +16,7 @@ The review is done when the review file has a verdict and its findings, ranked m
 
 ## Model and budget
 
-You run on Opus. Your budget is about 150,000 tokens. This build runs in the lean mode, so you can't start subagents. Open links yourself.
+You run on the strongest model. Your budget is about 150,000 tokens. This build runs in the lean mode, so you can't start subagents. Open links yourself.
 
 Before you start, fetch one page P01 cites. If the fetch fails, stop and say so in your handoff.
 

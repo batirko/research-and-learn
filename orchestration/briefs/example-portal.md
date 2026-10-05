@@ -14,7 +14,7 @@ Sam reads the guide at a desk and works at the hive with gloves on. Each topic e
 
 ## Model and budget
 
-You run on Opus. Your budget is about 200,000 tokens. Set the model on any subagent you start.
+You run on the strongest model. Your budget is about 200,000 tokens. Set the model on any subagent you start.
 
 ## Read before you start
 

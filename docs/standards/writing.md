@@ -56,7 +56,7 @@ Don't use em dashes, en dashes or double hyphens in prose. Use a full stop, a co
 
 ## Patterns to cut
 
-Run the `no-ai-slop` skill, in `.claude/skills/no-ai-slop/`, on your prose before you hand it off. It finds these, among others:
+Run the `no-ai-slop` skill, in `.agents/skills/no-ai-slop/`, on your prose before you hand it off. It finds these, among others:
 
 - Contrast frames: "It's not X, it's Y." State Y.
 - Openers that clear the throat: "Here's the thing", "It's worth noting".

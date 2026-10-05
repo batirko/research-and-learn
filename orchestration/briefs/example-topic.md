@@ -20,7 +20,7 @@ Sam starts a first season with two hives at the association's teaching apiary in
 
 ## Model and budget
 
-You run on Opus. Your budget is about 250,000 tokens. This build runs in the lean mode, so you can't start subagents. Research alone.
+You run on the strongest model. Your budget is about 250,000 tokens. This build runs in the lean mode, so you can't start subagents. Research alone.
 
 Before you start, fetch one page you need. If the fetch fails, stop and say so in your handoff. A topic written without the web is written from memory.
 

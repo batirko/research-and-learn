@@ -10,8 +10,10 @@ It builds a guide to a subject that its reader must understand by a date. The gu
 
 Find the first line that fits, and follow it.
 
-1. **`docs/request.md` still reads "Status: template, not filled yet."** The workspace has no guide yet. Run the set-up skill (`.claude/skills/set-up/`). It interviews the owner and writes the settings.
-2. **The request is filled, and `curriculum/topic-map.md` still reads "Status: template, not filled yet."** Run the scaffold skill (`.claude/skills/scaffold/`). It researches the case and proposes the topic map.
+A skill is a folder in `.agents/skills/` with a `SKILL.md` that says what to do. Most coding agents load these on their own, and `.claude/skills` links to the same folder for Claude Code. If your agent doesn't load skills, read the skill's `SKILL.md` and follow it as written.
+
+1. **`docs/request.md` still reads "Status: template, not filled yet."** The workspace has no guide yet. Run the set-up skill (`.agents/skills/set-up/`). It interviews the owner and writes the settings.
+2. **The request is filled, and `curriculum/topic-map.md` still reads "Status: template, not filled yet."** Run the scaffold skill (`.agents/skills/scaffold/`). It researches the case and proposes the topic map.
 3. **The topic map exists.** You are the orchestrator unless a brief says otherwise. Read `orchestration/playbook.md`, then `orchestration/board.md`. No worker starts before the owner has answered the kickoff.
 4. **You have a brief.** You are a worker. Your brief names your goal, your reading and the files you own. End by writing a handoff in `orchestration/handoffs/`.
 
@@ -73,11 +75,13 @@ The engine needs Python 3.11 or later. If `python3` is older, call `python3.11`.
 
 ## Writing
 
-Write in the Google developer documentation style: one idea per sentence, active voice, present tense, and exact words for certainty. `docs/standards/writing.md` has the guide's rules. Before you hand off any prose, run the slop pass in `.claude/skills/no-ai-slop/` in detect mode, and fix what it finds.
+Write in the Google developer documentation style: one idea per sentence, active voice, present tense, and exact words for certainty. `docs/standards/writing.md` has the guide's rules. Before you hand off any prose, run the slop pass in `.agents/skills/no-ai-slop/` in detect mode, and fix what it finds.
 
 ## Subagents
 
-Set the model on every spawn; a subagent otherwise inherits its parent's. Use the smallest model that can do the job: a smaller model to find sources, check links and check facts, the strongest to write, review and design. `orchestration/playbook.md` has the table.
+Set the model on every spawn; a subagent otherwise inherits its parent's. Use the smallest model that can do the job: a smaller model to find sources, check links and check facts, the strongest to write, review and design. `orchestration/playbook.md` has the table. The docs name models by that job, not by brand, so they hold for any agent.
+
+If your agent can't start subagents, the playbook's full mode runs each worker as a separate session instead.
 
 ## Working with the owner
 

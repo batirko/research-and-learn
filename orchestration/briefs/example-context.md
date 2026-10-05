@@ -15,7 +15,7 @@ B02, P02 and the open-questions page rest on what the association does. The scaf
 
 ## Model and budget
 
-You run on Opus. Your budget is about 100,000 tokens.
+You run on the strongest model. Your budget is about 100,000 tokens.
 
 Before you start, fetch the association's home page. If the fetch fails, stop and say so in your handoff.
 
