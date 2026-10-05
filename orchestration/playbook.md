@@ -127,7 +127,7 @@ Integration ties the guide together and checks it as a whole.
 
 The owner reads, marks and notes in the portal. Their marks and notes stay in their browser. Keep a short list of the fixes they ask for, and send them out in batches. A fix to a finished topic goes to a fix worker, with a brief that names the topic's files.
 
-Before the owner shares the built portal, run the private-term scan on it: `python3 tools/scan.py files site/ --terms <list>`. The term list lives outside the workspace.
+Before the owner shares the portal, build a copy without the private blocks, `python3 engine/build.py --share`, and run the private-term scan on it: `python3 tools/scan.py files site-share/ --terms <list>`. The term list lives outside the workspace.
 
 ## The checks
 

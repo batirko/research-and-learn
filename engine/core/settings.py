@@ -47,6 +47,7 @@ DEFAULTS = {
         "home": "content/home.md",
         "questions_page": "content/questions.md",
         "out": "site",
+        "share_out": "site-share",
     },
     "tiers": [
         {"id": "base", "name": "Base", "prefix": "B",
@@ -452,8 +453,8 @@ class Settings:
     def intro(self, tier_id):
         return self.content / tier_id / "intro.md"
 
-    def out_dir(self):
-        out = Path(self.paths["out"]).expanduser()
+    def out_dir(self, share=False):
+        out = Path(self.paths["share_out" if share else "out"]).expanduser()
         return out if out.is_absolute() else (self.root / out).resolve()
 
     # ---- tags

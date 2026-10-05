@@ -21,8 +21,9 @@ def attr(text):
 class Context:
     """What the renderer needs to know about the rest of the guide."""
 
-    def __init__(self, S, topics, questions, auto_private=False):
+    def __init__(self, S, topics, questions, auto_private=False, share=False):
         self.S = S
+        self.share = share            # a shared copy: private blocks are left out
         self.topics = topics          # id -> {"title", "href", "written"}
         self.questions = questions    # id -> {"title", "href"}
         self.auto_private = auto_private
@@ -236,10 +237,35 @@ def render_list(items, ctx):
 
 
 def wrap_private(fragment, source, ctx):
-    """In auto-private mode, collapse any block that cites a private source."""
+    """In auto-private mode, collapse any block that cites a private source.
+    In a shared copy, leave it out."""
     if ctx.auto_private and ctx.private_depth == 0 and ctx.S.has_private_tag(source):
+        if ctx.share:
+            return omitted_block(ctx.S.private_label, questions=question_ids(source, ctx.S))
         return private_details(fragment, ctx.S.private_label)
     return fragment
+
+
+def question_ids(text, S):
+    """The open questions a text names, by link or by ID, in order of first mention."""
+    found = []
+    for m in S.any_question_id_re.finditer(text):
+        if m.group(0) not in found:
+            found.append(m.group(0))
+    return found
+
+
+def omitted_block(label="", visuals=(), questions=()):
+    """What a shared copy shows in place of a private block: what a closed block shows,
+    its label and its visuals' titles, which the format makes public, and nothing else.
+    questions lists the open questions the block named, so the open-questions page can
+    still give each one an anchor."""
+    label_html = ' <span class="private-label">%s</span>' % esc(label) if label else ""
+    vis_html = "".join('<p class="private-visual"><span class="visual-n">Visual %d</span> %s</p>' % (n, title)
+                       for n, title in visuals)
+    data = ' data-questions="%s"' % attr(" ".join(questions)) if questions else ""
+    return ('<div class="private private-stub private-omitted"%s><p class="private-stub-head"><span class="private-mark">Private</span>%s</p>'
+            '%s<p class="private-stub-note">Left out of this copy.</p></div>' % (data, label_html, vis_html))
 
 
 def private_details(inner_html, label="", visuals=()):

@@ -96,10 +96,14 @@ Everything under `context/`, `curriculum/`, `content/` and `orchestration/` star
 
 ## Before you share a portal
 
-A built portal holds the text of every private block, closed but present. Before you send it to anyone, scan it against a list of the names and phrases that must not leave your machine:
+A built portal holds the text of every private block, closed but present. To send it to anyone, build a copy without them, then scan that copy against a list of the names and phrases that must not leave your machine:
 
 ```bash
-python3 tools/scan.py files site/ --terms ~/path/to/your-private-terms.txt
+python3 engine/build.py --share
+```
+
+```bash
+python3 tools/scan.py files site-share/ --terms ~/path/to/your-private-terms.txt
 ```
 
 The list lives outside the folder, so the list itself never gets shared. `engine/core/terms.py` describes its format.

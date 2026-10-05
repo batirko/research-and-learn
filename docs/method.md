@@ -128,7 +128,7 @@ Three layers keep private facts where they belong.
 
 1. **A private block** holds a fact from a private source. The portal shows it collapsed, and search leaves it out. Its label and the titles of any visuals inside it are public text, because a closed block shows them.
 2. **The never-publish list,** `context/never-publish.md`, names what must never reach the portal, even collapsed. The build fails if one appears.
-3. **The private-term scan** checks a built portal against a list you keep outside the workspace, before you share the portal with anyone.
+3. **A copy to share** leaves out every private block: `python3 engine/build.py --share`. The private-term scan then checks it against a list you keep outside the workspace, before the copy goes to anyone.
 
 No script catches a private fact restated in other words. So the writer and the reviewer each search the public text for one. A collapsed block only hides text from a glance. Anyone who has the files can open every block, including anyone you send the portal to.
 

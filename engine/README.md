@@ -15,10 +15,11 @@ The engine needs Python 3.11 or later and nothing outside the standard library. 
 | Check a page without parts | `python3 engine/topic.py content/questions.md` |
 | Lint the writing | `python3 tools/lint.py` (every topic) or `python3 tools/lint.py <topic folder>` |
 | List the lint's rules | `python3 tools/lint.py --rules` |
-| Scan a built portal for private terms | `python3 tools/scan.py files site/ --terms <your list>` |
+| Build a copy to share, without the private blocks | `python3 engine/build.py --share` |
+| Scan that copy for private terms | `python3 tools/scan.py files site-share/ --terms <your list>` |
 | Run the engine's tests | `python3 -m unittest discover -s engine/tests` |
 
-Every command takes `--guide <settings file>` to work on a guide whose `guide.toml` lives elsewhere. `build.py` also takes `--out <folder>`.
+Every command takes `--guide <settings file>` to work on a guide whose `guide.toml` lives elsewhere. `build.py` also takes `--out <folder>`, and `--share`.
 
 `build.py` rebuilds the whole site into `site/`, prints each topic's word count with its errors and warnings, then runs the checks. It exits with code 1 when a topic has a format error or a check fails. To open the portal, open `site/index.html` in a browser.
 
@@ -64,7 +65,7 @@ They run after every build, on what the build wrote. `docs/standards/portal.md` 
 2. **Every topic appears in its tier with its rank.** Each topic folder has a page, filed under its tier, with the rank its header and the map give it.
 3. **No internal link is broken.** That covers every page, every entry in the search index, and an anchor for every open question.
 4. **Both themes are defined, and the page has a background.** How they look is checked by eye.
-5. **Every private tag sits in a closed private block, and search holds nothing a private block holds.** The check probes the search index with the opening words of every private paragraph.
+5. **Every private tag sits in a closed private block, and search holds nothing a private block holds.** The check probes the search index with the opening words of every private paragraph. In a copy built with `--share`, it probes every page too, and fails on any private block or private tag.
 6. **The home page's totals match the pages.**
 7. **The glossary page is complete and clean.** Every term shows, every home topic exists, and no bookkeeping or private source shows in the open. The home page and the open-questions page get the same scan for private sources.
 8. **The visual index is complete.** Every visual shows once, and a private one shows its title only.
@@ -72,6 +73,12 @@ They run after every build, on what the build wrote. `docs/standards/portal.md` 
 **The guard** runs last: nothing on the never-publish list may appear anywhere in the site.
 
 When a check fails, its line names the page and the problem. Fix the source and rebuild. Never edit a page in `site/`: the next build deletes it.
+
+## A copy to share
+
+A built portal holds the text of every private block, closed but present: anyone who has the files can open them. `python3 engine/build.py --share` builds a copy without them, into `site-share/` (`paths.share_out`). Each private block becomes a closed stub with its label, its visuals' titles and the words "Left out of this copy". The glossary leaves out its private sentences, a planned topic's page leaves out the parts of its plan that cite a private source, and the footer says the copy leaves out every private block.
+
+The label and the visuals' titles stay because they are public text already: a closed block shows them, and search finds them. Read them before you share the copy, and scan it with the private-term scan.
 
 ## In the browser
 

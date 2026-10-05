@@ -246,7 +246,60 @@ def run(out_dir, site):
     results.append(("4. Light and dark themes are defined, and body has a background", themed and body_bg,
                     "rendering is checked by eye"))
 
-    # 5. Private facts marked
+    # 5. Private facts marked, or, in a shared copy, left out
+    if site.share:
+        results.append(check_shared(out_dir, site, pages, index_text))
+    else:
+        results.append(check_private(out_dir, site, pages, index_text))
+
+    results += checks_6_to_8(out_dir, site, pages)
+    results.append(guard(out_dir, S))
+    return results
+
+
+def check_shared(out_dir, site, pages, index_text):
+    """A shared copy holds no private block, no private tag, and nowhere the opening words
+    of a private paragraph: not in a page, not in the search index."""
+    S = site.S
+    found = []
+    texts = {}
+    for name in pages:
+        raw = (out_dir / name).read_text(encoding="utf-8")
+        if '<details class="private"' in raw:
+            found.append("%s holds a private block" % name)
+        if pages[name].private_tags:
+            found.append("%s shows %d private tags" % (name, pages[name].private_tags))
+        texts[name] = words_of(re.sub(r"<[^>]+>", " ", raw))
+    texts["search index"] = words_of(index_text)
+    probes = [(where, line, para) for where, line, para in private_paragraphs(site)]
+    for sec in site.glossary:
+        for r in sec["rows"]:
+            probes += [("glossary", r["line"], x) for x in r["private"]]
+        for note in sec["notes"]:
+            probes += [("glossary", None, x) for x in note["private"]]
+    for tid, t in site.topics.items():
+        if not t["written"] and t["map"] is not None:
+            for _, text in t["map"]["fields"]:
+                # The planned page leaves out each paragraph, list or table that cites a private
+                # source. The line that carries the tag is in it, so that line is the probe.
+                for line in text.split("\n"):
+                    if S.has_private_tag(re.sub(r"`(\[[^`\]]+\])`", r"\1", line)):
+                        probes.append(("the map's entry for %s" % tid, None, line))
+    for where, line, para in probes:
+        para = S.ref_re.sub(" ", S.tag_re.sub(" ", para))
+        para = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", para)
+        probe = " ".join(words_of(para).split()[:8])
+        if len(probe.split()) == 8:
+            hits = [name for name, text in texts.items() if probe in text]
+            if hits:
+                found.append("a private paragraph (%s%s) shows in %s" % (where, " line %s" % line if line else "", ", ".join(hits[:3])))
+    left_out = sum((out_dir / n).read_text(encoding="utf-8").count('class="private private-stub private-omitted"') for n in pages)
+    return ("5. A shared copy: no private block, no private tag, and no private paragraph anywhere in the site", not found,
+            "; ".join(found[:6]) if found else "%d private paragraphs probed; %d private blocks left out" % (len(probes), left_out))
+
+
+def check_private(out_dir, site, pages, index_text):
+    S = site.S
     unmarked = ["%s (%d)" % (name, s.private_tags_unmarked) for name, s in pages.items() if s.private_tags_unmarked]
     total_private = sum(s.private_tags for s in pages.values())
     leaks = index_leaks(site, index_text)
@@ -264,9 +317,14 @@ def run(out_dir, site):
         if got != want:
             unmarked.append("%s has %d private blocks, %s shows %d" % (pg["path"], want, name, got))
         covered.append("%s %d" % (name, want))
-    results.append(("5. Every private tag sits in a collapsed private block, and search leaves private blocks out", not unmarked,
-                    "; ".join(unmarked) if unmarked else "%d private tags, all inside private blocks; none in the search index%s" % (
-                        total_private, ("; private blocks on " + ", ".join(covered)) if covered else "")))
+    return ("5. Every private tag sits in a collapsed private block, and search leaves private blocks out", not unmarked,
+            "; ".join(unmarked) if unmarked else "%d private tags, all inside private blocks; none in the search index%s" % (
+                total_private, ("; private blocks on " + ", ".join(covered)) if covered else ""))
+
+
+def checks_6_to_8(out_dir, site, pages):
+    S = site.S
+    results = []
 
     # 6. Totals on the home page match the pages
     home = pages.get("index.html")
@@ -381,8 +439,11 @@ def run(out_dir, site):
                 len([1 for _, v in sources if v.get("private")]), n_private))
     results.append(("8. Visual index: every visual once, a private one by its title only", not vx_problems,
                     "; ".join(vx_problems[:6]) if vx_problems else "%d visuals, %d of them private" % (expected, n_private)))
+    return results
 
-    # The guard: what never reaches the portal
+
+def guard(out_dir, S):
+    """What never reaches the portal."""
     terms, list_problems = never_publish_terms(S)
     flagged = list(list_problems)
     if terms:
@@ -398,5 +459,4 @@ def run(out_dir, site):
         detail = "; ".join(flagged[:6])
     else:
         detail = "%d term%s, none in the site" % (len(terms), "" if len(terms) == 1 else "s")
-    results.append(("Guard: nothing on the never-publish list reaches the site", not flagged, detail))
-    return results
+    return ("Guard: nothing on the never-publish list reaches the site", not flagged, detail)

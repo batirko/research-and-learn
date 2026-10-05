@@ -12,6 +12,11 @@ site/ by default. Open its index.html in a browser.
 Options:
     --guide FILE   build another guide, from its settings file (default: guide.toml)
     --out DIR      write the site somewhere else
+    --share        build a copy to share: every private block is left out, and only
+                   its label and its visuals' titles stay. It goes to site-share/
+                   (paths.share_out) unless --out says otherwise. Check 5 then makes
+                   sure no private text is anywhere in it. Scan it before you send it:
+                   python3 tools/scan.py files site-share/ --terms <your list>
 
 Exit code 1 when a topic has format errors or a check fails.
 Python 3.11 or later, standard library only.
@@ -37,7 +42,8 @@ def main(argv):
     from core import checks
     from core.site import Site
 
-    out_dir = S.out_dir()
+    share = "--share" in argv
+    out_dir = S.out_dir(share)
     if "--out" in argv:
         k = argv.index("--out")
         if k + 1 >= len(argv):
@@ -45,7 +51,7 @@ def main(argv):
             return 2
         out_dir = Path(argv[k + 1]).expanduser().resolve()
 
-    site = Site(S).load()
+    site = Site(S, share=share).load()
     site.build(out_dir)
 
     written = [t for t in site.topics.values() if t["written"]]
@@ -81,6 +87,9 @@ def main(argv):
     for name, ok, detail in results:
         print("  [%s] %s%s" % ("pass" if ok else "FAIL", name, (": " + detail) if detail else ""))
         failed = failed or not ok
+    if share:
+        print("A copy to share, without its private blocks. Before you send it, scan it:")
+        print("  python3 tools/scan.py files %s --terms <your private-term list>" % out_dir)
     print("Open %s" % (out_dir / "index.html"))
     return 1 if failed else 0
 

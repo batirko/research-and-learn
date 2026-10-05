@@ -28,6 +28,8 @@ jobs:
         run: python -m unittest discover -s engine/tests -v
       - name: Build the test guide and run the eight checks
         run: python engine/build.py --guide engine/tests/fixture/guide.toml --out "$RUNNER_TEMP/fixture-site"
+      - name: Build a copy of the test guide to share, without its private blocks
+        run: python engine/build.py --guide engine/tests/fixture/guide.toml --out "$RUNNER_TEMP/fixture-share" --share
       - name: Lint the test guide
         run: python tools/lint.py --guide engine/tests/fixture/guide.toml --strict
       - name: Build the empty template

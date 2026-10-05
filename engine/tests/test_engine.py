@@ -99,6 +99,50 @@ class TheTestGuide(unittest.TestCase):
             self.assertIn("What the mentor keeps over winter", index)   # the label is public
 
 
+class TheSharedCopy(unittest.TestCase):
+    """build.py --share: a copy without the private blocks, for sending to someone."""
+
+    def build_shared(self, c):
+        return quiet(build.main, ["--guide", str(c.path("guide.toml")), "--out", str(c.tmp / "shared"), "--share"])
+
+    def site_text(self, c):
+        return "\n".join(p.read_text() for p in (c.tmp / "shared").rglob("*") if p.suffix in (".html", ".js"))
+
+    def test_it_passes_every_check_and_holds_no_private_text(self):
+        with Copy() as c:
+            code, out = self.build_shared(c)
+            self.assertEqual(code, 0, out)
+            self.assertIn("[pass] 5. A shared copy", out)
+            text = self.site_text(c)
+            for private in ("single brood box", "ten minutes in spring", "seller marks every queen", "calls it the yard",
+                            "mentor-call", 'class="private"><summary>'):
+                self.assertNotIn(private, text)
+
+    def test_a_left_out_block_keeps_its_label_and_says_so(self):
+        with Copy() as c:
+            self.build_shared(c)
+            page = (c.tmp / "shared" / "b01.html").read_text()
+            self.assertIn("What the mentor keeps over winter", page)
+            self.assertIn("Left out of this copy.", page)
+            self.assertIn("leaves out every private block", page)
+
+    def test_a_question_named_only_in_a_private_block_keeps_its_anchor(self):
+        with Copy() as c:
+            c.edit("content/questions.md", "### OQ-02. Does the association lend an extractor?\n",
+                   ":::private What the secretary hinted\nThe secretary hinted at OQ-02 [private: secretary-email].\n:::\n\n")
+            c.edit("content/questions.md", "The handbook names one", "Nobody asked yet. The handbook names one")
+            code, out = self.build_shared(c)
+            self.assertEqual(code, 0, out)
+            self.assertIn('id="oq-02"', (c.tmp / "shared" / "questions.html").read_text())
+
+    def test_a_private_paragraph_restated_in_public_fails_check_5(self):
+        with Copy() as c:
+            c.edit(B01_MD, "Before people built hives", "The mentor keeps each colony in a single brood box over winter. Before people built hives")
+            code, out = self.build_shared(c)
+            self.assertEqual(code, 1)
+            self.assertIn("[FAIL] 5.", out)
+
+
 class TheFormatCheck(unittest.TestCase):
     def parse(self, c):
         return parse_topic(c.path(B01), load(c.path("guide.toml")))

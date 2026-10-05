@@ -14,7 +14,7 @@ from pathlib import Path
 from . import glossary, pages, topicmap
 from . import render as md
 from .settings import ENGINE, RANKS
-from .topicfile import known_ids, parse_topic
+from .topicfile import block_text, known_ids, parse_topic
 
 ASSETS = ENGINE / "assets"
 COVERS_LABEL = {"problem": "The problem", "solutions": "The solutions", "both": "The problem and the solutions"}
@@ -44,8 +44,9 @@ def fmt_min(minutes, approx=False):
 class Site:
     """The parsed guide, and the pieces of HTML every page shares."""
 
-    def __init__(self, S):
+    def __init__(self, S, share=False):
         self.S = S
+        self.share = share   # a copy to share: every private block is left out
 
     # ---------------------------------------------------------------- loading
 
@@ -137,7 +138,7 @@ class Site:
         return self
 
     def ctx(self, auto_private=False):
-        return md.Context(self.S, self.t_ctx, self.q_ctx, auto_private=auto_private)
+        return md.Context(self.S, self.t_ctx, self.q_ctx, auto_private=auto_private, share=self.share)
 
     def tier_ids(self, tier):
         return [tid for g in self.groups[tier] for tid in g["ids"]]
@@ -185,6 +186,8 @@ class Site:
         layout_cls = "layout" + (" has-rail" if rail else "") + (" has-toc" if toc else "")
         config = json.dumps(S.js_config(), ensure_ascii=False).replace("</", "<\\/")
         footer_note = '<p>%s</p>' % esc(S.portal["footer_note"]) if S.portal["footer_note"] else ""
+        if self.share:
+            footer_note = '<p class="share-note">This copy leaves out every private block.</p>' + footer_note
         return """<!doctype html>
 <html lang="%(lang)s">
 <head>
@@ -639,7 +642,19 @@ class Site:
                     return qid
                 return '<span class="q-anchor" id="%s">%s</span>' % (qid.lower(), qid)
             parts[k] = re.sub(r"(?<![\w-])(%s)(?!\w)" % self.S.question_id_pattern, sub, part)
-        return "".join(parts)
+        fragment = "".join(parts)
+        if self.share and want:
+            fragment = self.anchor_omitted(fragment, want)
+        return fragment
+
+    def anchor_omitted(self, fragment, qids):
+        """In a shared copy, a question named only inside a private block gets its anchor on
+        the block's stub, which lists the questions the block named."""
+        for qid in sorted(qids):
+            m = re.search(r'(<div class="private private-stub private-omitted" data-questions="[^"]*\b%s\b[^"]*">)' % re.escape(qid), fragment)
+            if m:
+                fragment = fragment[:m.end()] + '<span class="q-anchor" id="%s"></span>' % qid.lower() + fragment[m.end():]
+        return fragment
 
     def questions_page(self):
         S = self.S
@@ -704,7 +719,7 @@ class Site:
             return " ".join(md.inline(glossary.link_ids(x, S), ctx) for x in items)
 
         def private_part(items):
-            if not items:
+            if not items or self.share:
                 return ""
             return md.private_details("<p>%s</p>" % sentences(items), S.private_label)
 
@@ -1043,6 +1058,8 @@ class TopicRenderer:
         for b in blocks:
             if b["type"] == "markdown":
                 out.append(md.render(b["text"], self.ctx, heading_level=4, anchor_prefix=anchor_prefix, levels=self.levels))
+            elif b["type"] == "private" and self.site.share:
+                out.append(self.omitted(b))
             elif b["type"] == "private":
                 first = self.visual_n + 1
                 self.ctx.private_depth += 1
@@ -1056,6 +1073,21 @@ class TopicRenderer:
             elif b["type"] == "visual":
                 out.append(self.visual(b))
         return "\n".join(out)
+
+    def omitted(self, b):
+        """A private block, left out of a shared copy. Its visuals keep their numbers and their
+        place in the visual index, by title only, as a closed block shows them."""
+        titles = []
+        self.private_labels.append(b.get("label", ""))
+        for x in b["blocks"]:
+            if x["type"] == "visual":
+                self.visual_n += 1
+                titles.append((self.visual_n, md.inline(x["title"], self.ctx)))
+                if not self.t.get("no_index"):
+                    self.record_visual(x, self.visual_n, "visual-%d" % self.visual_n, "")
+        self.private_labels.pop()
+        inner = "\n".join(block_text(x) for x in b["blocks"])
+        return md.omitted_block(b.get("label", ""), titles, md.question_ids(inner, self.S))
 
     def visual(self, v):
         self.visual_n += 1

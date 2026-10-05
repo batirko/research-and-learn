@@ -66,7 +66,8 @@ The engine needs Python 3.11 or later. If `python3` is older, call `python3.11`.
 | Check a topic you wrote | `python3 engine/topic.py content/<tier>/<id>-<slug>` |
 | Lint it | `python3 tools/lint.py content/<tier>/<id>-<slug>` |
 | Build the portal and run the checks (orchestrator only) | `python3 engine/build.py` |
-| Scan a built portal before sharing it | `python3 tools/scan.py files site/ --terms <the owner's list>` |
+| Build a copy to share, without the private blocks | `python3 engine/build.py --share` |
+| Scan that copy before it goes to anyone | `python3 tools/scan.py files site-share/ --terms <the owner's list>` |
 
 `engine/README.md` explains the build and its eight checks.
 

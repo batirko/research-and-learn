@@ -58,6 +58,7 @@ The colour doesn't protect anything; the closing does. That's why every private 
 - A closed block that holds a visual shows the visual's number and title, so a reader sees a figure is inside. The title is public by the format's rule.
 - "Open all private facts" sits under a page's title when the page has a private block. The portal doesn't remember it: every page opens with its private facts closed, because the closing exists for the shared screen.
 - Search finds a block by its label and its visuals' titles only.
+- A copy built to share replaces each block with a closed stub in the same grey: the "Private" mark, the label, the visuals' titles, and "Left out of this copy". It can't be opened, because nothing is inside.
 
 ## Provenance tags
 

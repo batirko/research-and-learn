@@ -73,7 +73,7 @@ The build runs these after every build and fails when one fails. `engine/README.
 2. **Every topic appears in its tier with its rank.** Each topic folder in a tier's folder has a page. The page shows the topic as written, in the tier of its folder, with the rank its header gives. That rank matches the topic map's, and the tier's page links to the topic.
 3. **No internal link is broken.** Every link between pages, and every link to an anchor, lands, in the pages and in the search index. The open-questions page has an anchor for every open question.
 4. **Both themes are defined, and the page has a background.** The stylesheet defines light and dark, for the system setting and for the theme switch, and the body has an explicit background. A person checks by eye whether both themes look right.
-5. **Private facts stay private.** Every private tag sits inside a collapsed private block, and no block starts open. The search index holds no private tag and no private paragraph. The home page and the open-questions page show as many private blocks as their source files hold.
+5. **Private facts stay private.** Every private tag sits inside a collapsed private block, and no block starts open. The search index holds no private tag and no private paragraph. The home page and the open-questions page show as many private blocks as their source files hold. In a copy built to share, the check is stricter: no page holds a private block or a private tag, and the opening words of no private paragraph appear anywhere in the site.
 6. **The home page totals match the pages.** Time by tier, by rank, written against planned, and materials by rank, all add up from the topic pages.
 7. **The glossary page is complete and clean.** It shows every term. Every home topic it names exists in the topic map. It shows no bookkeeping: no sentence that starts with a word in `glossary.bookkeeping`, and no decision reference such as (D12). No private source shows outside a private block, when `privacy.glossary_source` names the pattern. The home page and the open-questions page name no private source in the open either, when `privacy.page_source` names it.
 8. **The visual index is complete.** It shows every visual from the written topics and the tier maps, once each. A visual from a private block shows its title only: no drawing, caption, job statement or alt text.
@@ -84,20 +84,26 @@ A topic with a format error also fails the build. `python3 engine/topic.py <topi
 
 ## Before you share a built portal
 
-The portal is for the reader. Before it goes to anyone else, check it.
+The portal is for the reader. A collapsed block only hides text from a glance: anyone who has the files can open every block. So before the portal goes to anyone else, build a copy without the private blocks, and check it.
 
-1. **Build it, and read the result.** Every check and the guard pass, and no topic has a format error.
+1. **Build a copy to share,** and read the result:
+
+   ```
+   python3 engine/build.py --share
+   ```
+
+   It writes the copy to `site-share/` (`paths.share_out`). Each private block becomes a closed stub that keeps only what a closed block shows anyway: its label and its visuals' titles. Every check and the guard pass, and no topic has a format error.
 2. **Open it from disk with the network off.** Look at a topic in both themes, at phone width, and in print preview.
 3. **Run the private-term scan:**
 
    ```
-   python3 tools/scan.py files site/ --terms <your list>
+   python3 tools/scan.py files site-share/ --terms <your list>
    ```
 
    The list holds the names and phrases that would identify a private source: people, places, organisations, dates of private conversations. Keep it outside the workspace, because the list names what it protects. A line under `[block]` fails the scan, and a line under `[warn]` is printed for you to judge. `python3 tools/scan.py --help` describes the format. Exit code 0 means no blocking hit.
 
-   A hit means the term sits somewhere in the built files, often inside a private block. Take the fact out of the topic and rebuild, or don't share this build.
-4. **Decide about the private blocks.** A collapsed block only hides text from a glance. Anyone you send the portal to can open every block. If that's not acceptable, don't send this build.
+   A hit in a copy without private blocks means the term sits in public text: a block's label, a visual's title, or a sentence that restates a private fact. Take it out of the source and rebuild.
+4. **Read the stubs' labels.** Each left-out block still shows its label. Check that no label states the fact it hides.
 
 The never-publish list and the private-term list do different jobs. The never-publish list sits in the workspace and keeps a fact out of the portal for everyone, the reader included. The private-term list sits outside it and catches what the reader may see but nobody else may.
 

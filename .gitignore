@@ -1,5 +1,6 @@
 # The built portal. Build it with: python3 engine/build.py
 /site/
+/site-share/
 /engine/tests/fixture/site/
 
 # Python and the operating system

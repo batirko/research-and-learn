@@ -220,6 +220,7 @@ The mentor's colonies overwinter in a single box [private: mentor-call 12:40].
 - A closed block shows the number and title of each visual inside it. So a visual's title is public, even inside a private block: it names the subject, never a private fact, and holds no tag.
 - Search leaves out what a private block holds. It finds the block by its label and its visuals' titles only.
 - The reader can open every private block on a page at once. Each page starts with them closed.
+- A copy built to share, `python3 engine/build.py --share`, leaves every private block out. Only its label and its visuals' titles stay, in a closed stub.
 - What is on the never-publish list never enters a topic at all. The build fails if it reaches the portal.
 
 ## Visuals

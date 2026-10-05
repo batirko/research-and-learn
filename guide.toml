@@ -33,8 +33,10 @@ never_publish = "context/never-publish.md"
 content = "content"
 home = "content/home.md"
 questions_page = "content/questions.md"
-# Where the build writes the portal.
+# Where the build writes the portal, and where `--share` writes a copy without the
+# private blocks.
 out = "site"
+share_out = "site-share"
 
 # The tiers: the first level of the guide. Each has an id (its folder under
 # content/), a name, a one-letter prefix for its topic IDs, a question it answers,
