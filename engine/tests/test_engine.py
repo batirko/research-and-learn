@@ -91,6 +91,13 @@ class TheTestGuide(unittest.TestCase):
             c.build()
             self.assertIn("--hue: 60;", (c.tmp / "site/assets/tokens.css").read_text())
 
+    def test_the_favicon_is_inline_and_takes_the_accent(self):
+        with Copy() as c:
+            c.build()
+            home = (c.tmp / "site/index.html").read_text()
+            self.assertIn('<link rel="icon" href="data:image/svg+xml,', home)
+            self.assertIn("fill=%22%23943e00%22", home)   # oklch(47% 0.150 60), the accent at hue 60
+
     def test_private_text_stays_out_of_search(self):
         with Copy() as c:
             c.build()

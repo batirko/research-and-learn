@@ -26,6 +26,7 @@ Every family lists fonts that ship with macOS, Windows and common Linux desktops
 - **The greys are neutral.** Panels, rules and secondary text have no hue at all, so a warm accent never tints the page.
 - **One accent.** It carries links, the focus ring, the critical rank and the one point of each visual, and it stays under about 5% of any screen. Its hue comes from the settings; its lightness and chroma are fixed, so the contrast holds at any hue.
 - **Dark mode** uses neutral dark greys. The accent keeps its hue and gains lightness.
+- **The favicon** is the wordmark's square in the accent colour. The build inlines it in every page as a data URI, so it follows `portal.accent_hue` and loads from nowhere.
 
 Contrast, as WCAG ratios, computed on 2026-10-05:
 

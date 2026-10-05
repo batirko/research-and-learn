@@ -7,9 +7,11 @@ writes the site. The checks in checks.py then read what build() wrote.
 import datetime
 import html
 import json
+import math
 import re
 import shutil
 from pathlib import Path
+from urllib.parse import quote
 
 from . import glossary, pages, topicmap
 from . import render as md
@@ -29,6 +31,32 @@ QUESTIONS_KEY = "questions"   # the open-questions page's key in the search inde
 
 esc = md.esc
 attr = md.attr
+
+
+def oklch_hex(lightness, chroma, hue):
+    """An OKLCH colour as #rrggbb, clipped to sRGB. The favicon needs a plain colour that any
+    browser draws, so the build works out the accent's value instead of leaving it to CSS."""
+    a, b = chroma * math.cos(math.radians(hue)), chroma * math.sin(math.radians(hue))
+    l_ = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+    m_ = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+    s_ = (lightness - 0.0894841775 * a - 1.2914855480 * b) ** 3
+    rgb = (4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_,
+           -1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_,
+           -0.0041960863 * l_ - 0.7034186147 * m_ + 1.7076147010 * s_)
+
+    def channel(c):
+        c = min(max(c, 0.0), 1.0)
+        c = 12.92 * c if c <= 0.0031308 else 1.055 * c ** (1 / 2.4) - 0.055
+        return round(c * 255)
+
+    return "#%02x%02x%02x" % tuple(channel(c) for c in rgb)
+
+
+def favicon(hue):
+    """The wordmark's square in the accent colour, as a data URI, so the icon loads from nowhere."""
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">'
+           '<rect x="2" y="2" width="12" height="12" fill="%s"/></svg>' % oklch_hex(0.47, 0.150, hue))
+    return "data:image/svg+xml," + quote(svg, safe=" =/:")
 
 
 def fmt_min(minutes, approx=False):
@@ -195,6 +223,7 @@ class Site:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>%(title)s</title>
+<link rel="icon" href="%(icon)s">
 <script>window.GUIDE=%(config)s;(function(){try{var d=document.documentElement,k=window.GUIDE.key,t=localStorage.getItem(k+'-theme');if(t==='light'||t==='dark'){d.setAttribute('data-theme',t);}if(localStorage.getItem(k+'-hide-context')==='1'){d.classList.add('hide-context');}}catch(e){}})();</script>
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/visuals.css">
@@ -228,7 +257,8 @@ class Site:
 </html>
 """ % {"lang": attr(S.language), "title": esc(title), "config": config, "kind": kind, "attrs": attrs,
            "wordmark": esc(S.title), "nav": "".join(nav), "sec": sec, "layout": layout_cls, "rail": rail,
-           "body": body, "toc": toc, "built": esc(self.built), "footer_note": footer_note, "search": search}
+           "body": body, "toc": toc, "built": esc(self.built), "footer_note": footer_note, "search": search,
+           "icon": attr(favicon(S.portal["accent_hue"]))}
 
     def topic_row(self, t, show_tier=False):
         status = "written" if t["written"] else "planned"
