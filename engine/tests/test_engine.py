@@ -235,6 +235,35 @@ class TheSettings(unittest.TestCase):
         self.assertEqual(S.storage_prefix, "your-guide")
 
 
+class OtherSettings(unittest.TestCase):
+    """Settings the test guide leaves at their defaults."""
+
+    def test_a_tag_with_a_required_time_stamp(self):
+        with Copy() as c:
+            c.edit("guide.toml", "[case]", '[[tags]]\nform = "call {time}"\nprivate = true\n\n[[tags]]\nform = "public"\n\n[case]')
+            S = load(c.path("guide.toml"))
+            self.assertTrue(S.is_private_tag("call 12:30"))
+            self.assertIsNone(S.tag_re.fullmatch("[call]"))
+            self.assertEqual(S.tag_kind("call 1:05 to 2:10"), "call")
+
+    def test_question_groups_limit_which_questions_count(self):
+        from core.topicmap import parse_questions
+        with Copy() as c:
+            c.edit("context/open-questions.md", "## About the colonies", "## Priority 1: about the colonies")
+            c.edit("guide.toml", "[case]", '[map]\nquestion_groups = "Priority"\n\n[case]')
+            qs = parse_questions(load(c.path("guide.toml")))
+            self.assertEqual(sorted(qs), ["OQ-01"])
+            self.assertEqual(qs["OQ-01"]["group"], "Priority 1: about the colonies")
+
+    def test_a_guide_can_live_outside_the_workspace(self):
+        with Copy() as c:
+            moved = c.tmp / "elsewhere.toml"
+            text = c.path("guide.toml").read_text().replace("[guide]", '[paths]\nroot = "guide"\n\n[guide]', 1)
+            moved.write_text(text)
+            code, out = quiet(build.main, ["--guide", str(moved), "--out", str(c.tmp / "site2")])
+            self.assertEqual(code, 0, out)
+
+
 class TheTermLists(unittest.TestCase):
     def test_words_match_whole_and_without_case(self):
         t = terms.Term("Hive")

@@ -1,6 +1,6 @@
 # research-and-learn: the concept
 
-**Status:** definition, 2026-10-05. Nothing is built yet. This page decides what the project is, what it ships, and how it stays free of the private guide it was extracted from.
+**Status:** version 1 built on 2026-10-05, except the example guide. This page decides what the project is, what it ships, and how it stays free of the private guide it was extracted from.
 
 ## What it is
 
