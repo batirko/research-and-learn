@@ -1,0 +1,10 @@
+# The built portal. Build it with: python3 engine/build.py
+/site/
+
+# Python and the operating system
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local settings for one machine
+.claude/settings.local.json

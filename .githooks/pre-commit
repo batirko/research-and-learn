@@ -1,0 +1,3 @@
+#!/bin/sh
+# Scans the files this commit adds or changes. See guard.sh.
+exec "$(dirname "$0")/guard.sh" staged

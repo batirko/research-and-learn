@@ -1,0 +1,3 @@
+#!/bin/sh
+# Scans the commit message. See guard.sh.
+exec "$(dirname "$0")/guard.sh" message "$1"

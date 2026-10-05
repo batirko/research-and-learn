@@ -1,0 +1,3 @@
+#!/bin/sh
+# Scans every commit, message and file version before anything leaves this machine. See guard.sh.
+exec "$(dirname "$0")/guard.sh" history
