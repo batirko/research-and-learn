@@ -1,5 +1,6 @@
 # The built portal. Build it with: python3 engine/build.py
 /site/
+/engine/tests/fixture/site/
 
 # Python and the operating system
 __pycache__/
@@ -8,3 +9,4 @@ __pycache__/
 
 # Local settings for one machine
 .claude/settings.local.json
+.claude/launch.json

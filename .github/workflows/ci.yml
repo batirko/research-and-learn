@@ -1,0 +1,38 @@
+# Builds the test guide, runs every check, the lint and the tests, and scans for secrets.
+# The private-term scan can't run here: its list lives outside the repository, on purpose.
+# The git hooks run it on every commit and push.
+
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Tests
+        run: python -m unittest discover -s engine/tests -v
+      - name: Build the test guide and run the eight checks
+        run: python engine/build.py --guide engine/tests/fixture/guide.toml --out "$RUNNER_TEMP/fixture-site"
+      - name: Lint the test guide
+        run: python tools/lint.py --guide engine/tests/fixture/guide.toml --strict
+      - name: Build the empty template
+        run: python engine/build.py --out "$RUNNER_TEMP/template-site"
+      - name: Scan the files and the history for secrets
+        run: |
+          python tools/scan.py files --no-terms --secrets
+          python tools/scan.py history --no-terms --secrets

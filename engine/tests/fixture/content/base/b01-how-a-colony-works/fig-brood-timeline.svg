@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 236">
+  <!-- One day is 23 units, from x = 120 (day 0) to x = 695 (day 25). -->
+
+  <!-- Queen: egg 0 to 3, larva 3 to 8, sealed 8 to 16 -->
+  <text class="v-text-strong" x="0" y="52">Queen</text>
+  <rect class="v-area-strong" x="120" y="34" width="69" height="26"/>
+  <rect class="v-area" x="189" y="34" width="115" height="26"/>
+  <rect class="v-area-accent" x="304" y="34" width="184" height="26"/>
+  <text class="v-text-on-accent" x="312" y="51">sealed</text>
+  <text class="v-text-muted" x="496" y="51">16 days</text>
+
+  <!-- Worker: egg 0 to 3, larva 3 to 9, sealed 9 to 21 -->
+  <text class="v-text-strong" x="0" y="100">Worker</text>
+  <rect class="v-area-strong" x="120" y="82" width="69" height="26"/>
+  <rect class="v-area" x="189" y="82" width="138" height="26"/>
+  <rect class="v-area-accent" x="327" y="82" width="276" height="26"/>
+  <text class="v-text-on-accent" x="335" y="99">sealed</text>
+  <text class="v-text-muted" x="611" y="99">21 days</text>
+
+  <!-- Drone: egg 0 to 3, larva 3 to 10, sealed 10 to 24 -->
+  <text class="v-text-strong" x="0" y="148">Drone</text>
+  <rect class="v-area-strong" x="120" y="130" width="69" height="26"/>
+  <rect class="v-area" x="189" y="130" width="161" height="26"/>
+  <rect class="v-area-accent" x="350" y="130" width="322" height="26"/>
+  <text class="v-text-on-accent" x="358" y="147">sealed</text>
+  <text class="v-text-muted" x="604" y="182">24 days</text>
+
+  <!-- The window in which a worker larva can still become a queen: days 3 to 6, drawn over the bars. -->
+  <rect class="v-line-accent" x="189" y="24" width="69" height="142"/>
+  <text class="v-text-accent" x="189" y="16">Can still become a queen</text>
+
+  <!-- Axis -->
+  <line class="v-rule" x1="120" y1="190" x2="700" y2="190"/>
+  <text class="v-label" x="120" y="206">day 0</text>
+  <text class="v-label" x="189" y="206">3</text>
+  <text class="v-label" x="488" y="206">16</text>
+  <text class="v-label" x="603" y="206">21</text>
+  <text class="v-label" x="672" y="206">24</text>
+
+  <!-- Legend -->
+  <rect class="v-area-strong" x="120" y="218" width="14" height="12"/>
+  <text class="v-text-muted" x="140" y="228">egg</text>
+  <rect class="v-area" x="200" y="218" width="14" height="12"/>
+  <text class="v-text-muted" x="220" y="228">larva</text>
+  <rect class="v-area-accent" x="290" y="218" width="14" height="12"/>
+  <text class="v-text-muted" x="310" y="228">sealed in its cell</text>
+</svg>

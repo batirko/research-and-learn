@@ -1,0 +1,275 @@
+# guide.toml: your guide's settings
+#
+# Every value that changes from one guide to another lives here, once. The
+# standards and the engine refer to these values by name, such as
+# materials.per_topic. The set-up skill fills this file in with you, and you can
+# edit it by hand at any time. Rebuild after a change:
+#
+#     python3 engine/build.py
+#
+# A key you leave out keeps the default shown here. Paths are relative to this
+# file. The engine needs Python 3.11 or later; if `python3` is older on your
+# machine, call `python3.11` instead.
+
+[guide]
+# The guide's name. It's the wordmark on every page and ends every page title.
+title = "Your guide"
+# The language of the pages, as a BCP 47 tag, such as en-GB or en-US.
+language = "en-GB"
+# The spelling the lint checks for: british, american, or none.
+spelling = "british"
+# The reader's first name. Topic text speaks to the reader as "you", so the lint
+# flags the name in a topic, and the glossary page turns "Sam's plan" into "your plan".
+reader = ""
+# One or two sentences under the title on the home page, used until content/home.md exists.
+description = ""
+
+[paths]
+# Where the guide's sources live. The defaults match this workspace.
+topic_map = "curriculum/topic-map.md"
+glossary = "context/glossary.md"
+open_questions = "context/open-questions.md"
+never_publish = "context/never-publish.md"
+content = "content"
+home = "content/home.md"
+questions_page = "content/questions.md"
+# Where the build writes the portal.
+out = "site"
+
+# The tiers: the first level of the guide. Each has an id (its folder under
+# content/), a name, a one-letter prefix for its topic IDs, a question it answers,
+# and a definition in your own words. The definitions don't change after set-up.
+#
+# updates = true marks a tier whose topics update topics in the other tiers. Such a
+# topic names the topics it updates and says what it covers: the problem, the
+# solutions or both. With both, its explanation splits into two halves.
+#
+# fast = true marks a tier whose facts age fast. Its materials carry a year and a
+# month, and a material older than materials.max_age_months needs a stated reason.
+
+[[tiers]]
+id = "base"
+name = "Base"
+prefix = "B"
+question = "How does it work, who does what, and why?"
+definition = "What you need to understand the domain: how it works, who does what, and why."
+
+[[tiers]]
+id = "practical"
+name = "Practical"
+prefix = "P"
+question = "What do people do to act in it, and how do they know it works?"
+definition = "The practices, frameworks, research and measures you use to act in it."
+
+[[tiers]]
+id = "modern"
+name = "Modern"
+prefix = "M"
+question = "What do today's tools and technology change?"
+definition = "What today's tools and technology change, in the problem and in the solutions."
+updates = true
+fast = true
+
+[case]
+# The case is the specific situation the guide prepares you for: your job, your
+# race, your move. A topic's case part holds what is known about it, what is
+# unknown, and what to look at first. To leave the part out of every topic, set
+# part to "".
+part = "In your case"
+known = "Known"
+unknown = "Unknown"
+first = "What to look at first"
+# Words that name the case: its organisation, its people, its places. The lint
+# asks for a provenance tag on any paragraph that names one. A term is matched as
+# written, with case. Start one with "re:" to write a regular expression.
+terms = []
+
+[parts]
+# The headings of a topic's parts, as writers type them and readers see them.
+why = "Why it matters for your goal"
+short = "The short version"
+explanation = "Explanation"
+problem = "Explanation: the problem"
+solutions = "Explanation: the solutions"
+positions = "Positions"
+materials = "Materials"
+unverified = "Not verified"
+check = "Check yourself"
+# The two lead-ins a reader skims for: what a concept means for your goal, and a
+# bridge to something you have done.
+consequence = "For your goal"
+bridge = "Bridge"
+# The three fields of a position.
+position_fields = ["Why hold it", "The strongest case against", "What would change it"]
+
+[sizes]
+# Reading time is words divided by this.
+words_per_minute = 220
+# Size bands, in words. XL is an exception the orchestrator grants in a brief.
+S = [800, 1500]
+M = [1500, 2500]
+L = [2500, 3500]
+XL = [3500, 4500]
+# How many XL topics the guide allows. Above the XL ceiling, a topic is two topics.
+xl_allowed = 5
+
+[limits]
+short_lines = [5, 8]          # lines in the short version
+why_sentences = [2, 4]        # public sentences in "Why it matters"
+positions = 3                 # positions in a topic, at most
+check_questions = 5           # questions in "Check yourself", at most
+sentence_words = 35           # the lint warns about a longer sentence
+sentence_words_action = 30    # the same, under "What to look at first"
+paragraph_sentences = 6       # sentences in a paragraph, at most
+
+[materials]
+per_topic = 5                     # materials in a topic, at most
+critical_per_topic = 1            # critical materials in a topic that isn't critical
+critical_per_critical_topic = 2   # critical materials in a critical topic
+critical_in_guide = 30            # critical materials in the whole guide
+max_age_months = 18               # in a fast tier, older materials need a reason
+exercises_free = true             # an exercise runs with free tools
+# The material types a topic can use.
+types = ["article", "paper", "book", "video", "talk", "podcast", "documentation", "course", "repository", "tool", "exercise"]
+
+# The four ranks. Their keys are fixed, because the file format uses them. The
+# words are yours: the label, what the rank means for a topic or section, what you
+# do with a material of that rank, the short action, and the minutes of your time
+# the home page counts for each material ("full", a number, or "optional").
+[ranks.critical]
+label = "Critical"
+topic = "You can't reach your goal without it."
+material = "Read or watch it in full. It gives something the guide can't."
+action = "Read in full"
+reader_minutes = "full"
+
+[ranks.high]
+label = "High"
+topic = "Needed to follow the core of the subject."
+material = "Skim it, 10 to 15 minutes."
+action = "Skim, 10 to 15 min"
+reader_minutes = 15
+
+[ranks.medium]
+label = "Medium"
+topic = "Useful background. It makes other topics easier."
+material = "Skim it faster, about 5 minutes."
+action = "Skim, about 5 min"
+reader_minutes = 5
+
+[ranks.context]
+label = "Context"
+topic = "Orientation and completeness. A context section is one you can skip without losing the thread."
+material = "Open it when you need it."
+action = "Open when needed"
+reader_minutes = "optional"
+
+# Provenance tags: where a fact about the case came from. A writer types a tag in
+# square brackets after the fact, such as [source: club-handbook 4]. A tag can
+# carry a link: [public](https://...). A private tag must sit inside a private
+# block, and search never shows what a private block holds.
+#
+# In a form, {name} is a short lowercase name such as club-handbook, {where} is an
+# optional place inside the source such as a page or a time stamp, {time} is a
+# required time stamp such as 12:30, and {section} is a section number such as §3.
+# Add your own tags; keep these five unless you have a reason.
+
+[[tags]]
+form = "public"
+title = "From a public page"
+
+[[tags]]
+form = "source: {name}{where}"
+title = "From a document in the guide's sources"
+
+[[tags]]
+form = "private: {name}{where}"
+private = true
+title = "Private. From a private source"
+
+[[tags]]
+form = "inference"
+title = "Reasoning from other facts, not a reported fact"
+
+[[tags]]
+form = "unverified"
+title = "A single weak source, or a memory. Not a fact"
+
+[privacy]
+# The label of a block the build closes for you, such as a glossary sentence that
+# cites a private source.
+label = "From a private source"
+# Optional regular expressions, matched without regard to case:
+# glossary_source marks a glossary sentence as private when it names a private source;
+# page_source fails check 7 when the home page or the open-questions page names a
+# private source outside a private block;
+# source_words makes the lint warn when a topic names a private source outside a private block.
+glossary_source = ""
+page_source = ""
+source_words = ""
+
+[map]
+# The words the topic map uses on the line under a topic's title, and its headings.
+# engine/format.md, "The topic map", shows them in place.
+read_first = "read first"
+after = "after"
+updates = "updates"
+ages_fast = "facts age fast"
+pilot = "pilot"
+reading_order = "Reading order"
+cluster_prefix = "C"
+question_prefix = "OQ-"
+# When set, only questions under a "## <word> N: ..." heading of the open questions
+# count, such as "## Priority 1: what changes the plan". Empty: every "##" heading groups.
+question_groups = ""
+
+[glossary]
+# Sentences in the glossary that start with one of these words are bookkeeping for
+# writers. The glossary page leaves them out.
+bookkeeping = ["Added"]
+# The prefix of a decision's ID in docs/decisions.md. The glossary page drops
+# references such as (D12), and check 7 fails when one shows.
+decision_prefix = "D"
+# Read the words the glossary bans from its "Don't use" column, for the lint.
+bans = true
+
+[portal]
+# The hue of the one accent colour, from 0 to 360: 255 is ink blue, 25 rust,
+# 150 green. Lightness and chroma are fixed, so contrast holds.
+accent_hue = 255
+# The prefix of everything the portal keeps in the browser: read marks, notes,
+# the theme. Empty means a slug of the title. Give each guide its own, because
+# pages opened from disk can share one storage.
+storage_prefix = ""
+# A line in every page's footer, such as where not to open the guide.
+footer_note = ""
+# Words the portal shows; change them to suit your guide.
+definition_label = "Your definition of this tier"
+questions_lead = "What this guide couldn't settle. Each question says what would settle it, so the list doubles as your list of things to find out."
+tier_map_pending = "A map of how these topics fit together comes later. Until then, the groups below are the map."
+
+[lint]
+# Links to example.com are placeholders, and the lint fails on them. A test
+# fixture can allow them.
+allow_example_links = false
+# Process words that don't belong in a topic's text.
+meta_words = ["dossier", "dossiers", "topic worker", "topic workers", "review worker", "portal worker", "context worker", "topic map", "orchestrator"]
+# Capitalised words the heading-case rule accepts, such as product names.
+proper_nouns = []
+# Abbreviations to spell out at first use: { ABBR = "what it stands for" }.
+abbreviations = {}
+# Fail on pay and contract terms, for a guide that must never hold them.
+pay_terms = false
+# More banned words, beyond the glossary's own. Each entry has a regular
+# expression and a hint; match_case = true makes it match case. An entry under
+# lint.ban fails the lint. An entry under lint.sense warns, because the word is
+# wrong in one sense only: topics lists topic IDs where it's the subject; near
+# reports only when the sentence also matches; unless_near skips when it does.
+#
+# [[lint.ban]]
+# pattern = '\butili[sz]e\b'
+# hint = "Use 'use'."
+
+[[lint.sense]]
+pattern = '\bthe guide\b'
+hint = "Inside topic text, write 'this guide'."

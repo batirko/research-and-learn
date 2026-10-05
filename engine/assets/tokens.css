@@ -1,0 +1,160 @@
+/* Design tokens for the portal: colour, type and space, in both themes.
+ *
+ * White paper, neutral greys and one accent. The greys have no hue at all, so
+ * a warm accent never tints the paper.
+ *
+ * --hue is the accent's hue, from portal.accent_hue in guide.toml. The build
+ * writes it into the copy of this file in the site. Lightness and chroma stay
+ * fixed, so contrast holds for any hue.
+ *
+ * Contrast (WCAG ratio), computed on 2026-10-05:
+ *   on white:      ink 17.7, muted 8.5, neutral 5.1, accent 6.9 at hue 255 and at least 5.7 at any hue
+ *   on dark paper: ink 16.0, muted 9.9, neutral 6.6, accent 8.3 at hue 255 and at least 7.8 at any hue
+ *
+ * Nothing loads from the network. Each family lists fonts that ship with
+ * macOS, Windows and common Linux desktops, then a generic family.
+ */
+
+:root {
+  --hue: 255;
+
+  --color-paper:       oklch(100% 0 0);
+  --color-paper-2:     oklch(97.6% 0 0);
+  --color-paper-3:     oklch(95.2% 0 0);
+  --color-rule:        oklch(90.5% 0 0);
+  --color-rule-strong: oklch(80% 0 0);
+  --color-neutral:     oklch(54% 0 0);
+  --color-muted:       oklch(42% 0 0);
+  --color-ink:         oklch(21% 0 0);
+
+  /* The one accent: links, focus, the critical rank, the point of a visual. */
+  --color-accent:      oklch(47% 0.150 var(--hue));
+  --color-accent-wash: oklch(96.5% 0.018 var(--hue));
+  --color-accent-line: oklch(72% 0.090 var(--hue));
+  --color-on-accent:   oklch(100% 0 0);
+  --color-focus:       oklch(47% 0.150 var(--hue));
+  --color-mark:        oklch(93% 0.060 95);
+  --color-scrim:       oklch(21% 0 0 / 0.42);
+
+  /* Ranks: one hue, four weights. Fill, outline, grey outline, dashed. */
+  --rank-critical-fg:   var(--color-on-accent);
+  --rank-critical-bg:   var(--color-accent);
+  --rank-critical-line: var(--color-accent);
+  --rank-high-fg:       var(--color-accent);
+  --rank-high-bg:       var(--color-paper);
+  --rank-high-line:     var(--color-accent);
+  --rank-medium-fg:     var(--color-muted);
+  --rank-medium-bg:     var(--color-paper);
+  --rank-medium-line:   var(--color-neutral);
+  --rank-context-fg:    var(--color-neutral);
+  --rank-context-bg:    var(--color-paper);
+  --rank-context-line:  var(--color-rule-strong);
+
+  /* Private facts: neutral and hatched, never the accent. */
+  --private-fg:     var(--color-ink);
+  --private-label:  var(--color-muted);
+  --private-bg:     var(--color-paper-2);
+  --private-line:   var(--color-muted);
+  --private-hatch:  var(--color-rule-strong);
+
+  /* Provenance tags. */
+  --tag-fg:         var(--color-neutral);
+  --tag-private-fg: var(--color-ink);
+  --tag-line:       var(--color-rule);
+
+  /* Type: a serif for reading, a humanist sans for headings and interface, and mono. */
+  --font-body:    "Charter", "Bitstream Charter", "Iowan Old Style", "Sitka Text", Cambria,
+                  "Noto Serif", "DejaVu Serif", "Liberation Serif", Georgia, serif;
+  --font-display: "Avenir Next", "Avenir", "Seravek", "Segoe UI", "Noto Sans", "Ubuntu", "Cantarell",
+                  "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "SFMono-Regular", Menlo, "Cascadia Mono", Consolas,
+                  "DejaVu Sans Mono", "Liberation Mono", monospace;
+
+  --text-2xs:  0.6875rem;  /* 11px: tags, chips */
+  --text-xs:   0.75rem;    /* 12px: meta lines */
+  --text-sm:   0.875rem;   /* 14px: interface, captions */
+  --text-base: 1.0625rem;  /* 17px: body */
+  --text-md:   1.25rem;    /* 20px: section headings */
+  --text-lg:   1.5625rem;  /* 25px: part headings */
+  --text-xl:   1.9531rem;  /* 31px: topic title */
+  --text-display: clamp(2rem, 2.4vw + 1.25rem, 2.75rem);
+
+  --leading-body:  1.6;
+  --leading-tight: 1.2;
+  --weight-body:   400;
+  --weight-ui:     500;
+  --weight-head:   700;
+
+  /* Space: a 4-point scale. */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  --measure:    68ch;
+  --rail-w:     16rem;
+  --rule-hair:  1px;
+  --rule-bold:  2px;
+  --radius-sm:  2px;
+  --radius-md:  4px;
+
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-short:   120ms;
+  --dur-mid:     200ms;
+
+  --z-sticky: 200;
+  --z-modal:  400;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-paper:       oklch(17% 0 0);
+    --color-paper-2:     oklch(20.5% 0 0);
+    --color-paper-3:     oklch(24% 0 0);
+    --color-rule:        oklch(30% 0 0);
+    --color-rule-strong: oklch(40% 0 0);
+    --color-neutral:     oklch(68% 0 0);
+    --color-muted:       oklch(79% 0 0);
+    --color-ink:         oklch(94% 0 0);
+
+    --color-accent:      oklch(74% 0.120 var(--hue));
+    --color-accent-wash: oklch(25% 0.035 var(--hue));
+    --color-accent-line: oklch(50% 0.080 var(--hue));
+    --color-on-accent:   oklch(17% 0 0);
+    --color-focus:       oklch(74% 0.120 var(--hue));
+    --color-mark:        oklch(38% 0.060 95);
+    --color-scrim:       oklch(8% 0 0 / 0.6);
+
+    --weight-body: 380;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-paper:       oklch(17% 0 0);
+  --color-paper-2:     oklch(20.5% 0 0);
+  --color-paper-3:     oklch(24% 0 0);
+  --color-rule:        oklch(30% 0 0);
+  --color-rule-strong: oklch(40% 0 0);
+  --color-neutral:     oklch(68% 0 0);
+  --color-muted:       oklch(79% 0 0);
+  --color-ink:         oklch(94% 0 0);
+
+  --color-accent:      oklch(74% 0.120 var(--hue));
+  --color-accent-wash: oklch(25% 0.035 var(--hue));
+  --color-accent-line: oklch(50% 0.080 var(--hue));
+  --color-on-accent:   oklch(17% 0 0);
+  --color-focus:       oklch(74% 0.120 var(--hue));
+  --color-mark:        oklch(38% 0.060 95);
+  --color-scrim:       oklch(8% 0 0 / 0.6);
+
+  --weight-body: 380;
+  color-scheme: dark;
+}

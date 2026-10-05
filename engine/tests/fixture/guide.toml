@@ -1,0 +1,58 @@
+# The engine's test guide: small, invented, and built by continuous integration.
+# Its subject is real, its case is invented, and nobody checked its facts.
+# It sets some values on purpose, to exercise the settings: smaller size bands,
+# a renamed case part, a case term, an accent hue and a never-publish list.
+
+[guide]
+title = "First season with bees"
+language = "en-GB"
+spelling = "british"
+reader = "Sam"
+description = "Before your first season with two hives, you learn how a colony works, how to look inside one, and what today's hive monitors add."
+
+[[tiers]]
+id = "base"
+name = "Base"
+prefix = "B"
+question = "What is going on inside the hive?"
+definition = "How a colony lives through a year, so I know what I'm looking at."
+
+[[tiers]]
+id = "practical"
+name = "Practical"
+prefix = "P"
+question = "What do I do at the hive, and when?"
+definition = "What a beekeeper does in the first season, and how to tell it worked."
+
+[[tiers]]
+id = "modern"
+name = "Modern"
+prefix = "M"
+question = "What do today's monitors change?"
+definition = "What scales, sensors and apps add to looking inside the hive."
+updates = true
+fast = true
+
+[case]
+part = "In your apiary"
+first = "What to check first"
+terms = ["Hillside"]
+
+[sizes]
+S = [150, 700]
+M = [700, 1200]
+L = [1200, 1800]
+XL = [1800, 2400]
+xl_allowed = 1
+
+[materials]
+critical_in_guide = 3
+
+[portal]
+accent_hue = 60
+storage_prefix = "first-season-bees"
+footer_note = "A test guide for the engine. Its facts are unchecked."
+
+[lint]
+allow_example_links = true
+abbreviations = { OSR = "oilseed rape" }

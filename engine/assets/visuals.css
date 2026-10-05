@@ -1,0 +1,31 @@
+/* Classes for the SVG of a visual. A visual's .svg file takes its colour and type
+ * from these classes only, so every visual follows the tokens in both themes.
+ * engine/format.md, "Visuals", says what each class is for.
+ */
+
+/* Areas: boxes, bars, regions. */
+.v-area         { fill: var(--color-paper-2); stroke: var(--color-rule-strong); stroke-width: 1; }
+.v-area-strong  { fill: var(--color-paper-3); stroke: var(--color-neutral); stroke-width: 1; }
+.v-area-accent  { fill: var(--color-accent); stroke: var(--color-accent); stroke-width: 1; }
+.v-area-wash    { fill: var(--color-accent-wash); stroke: var(--color-accent); stroke-width: 1.2; }
+.v-area-unknown { fill: none; stroke: var(--color-neutral); stroke-width: 1.2; stroke-dasharray: 5 4; }
+
+/* Lines: connectors, arrows, axes. */
+.v-line         { fill: none; stroke: var(--color-rule-strong); stroke-width: 1.4; }
+.v-line-strong  { fill: none; stroke: var(--color-ink); stroke-width: 1.4; }
+.v-line-accent  { fill: none; stroke: var(--color-accent); stroke-width: 1.8; }
+.v-line-unknown { fill: none; stroke: var(--color-neutral); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.v-rule         { fill: none; stroke: var(--color-rule); stroke-width: 1; }
+
+/* Solid fills for arrowheads, dots and markers. */
+.v-fill-ink     { fill: var(--color-ink); }
+.v-fill-accent  { fill: var(--color-accent); }
+.v-fill-neutral { fill: var(--color-neutral); }
+
+/* Text. Sizes are in viewBox units, for a viewBox 720 units wide. */
+.v-text           { fill: var(--color-ink); font-family: var(--font-display); font-size: 13px; font-weight: 500; }
+.v-text-strong    { fill: var(--color-ink); font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+.v-text-muted     { fill: var(--color-muted); font-family: var(--font-display); font-size: 12px; }
+.v-text-accent    { fill: var(--color-accent); font-family: var(--font-display); font-size: 12px; font-weight: 700; }
+.v-text-on-accent { fill: var(--color-on-accent); font-family: var(--font-display); font-size: 12px; font-weight: 600; }
+.v-label          { fill: var(--color-neutral); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; }
