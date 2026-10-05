@@ -83,7 +83,7 @@ The part has three blocks, always in this order.
 
 **Treat the context notes as a first reading.** They keep evidence apart from interpretation, and the interpretation came before anyone knew the case well. When your research contradicts a reading, the evidence wins. Weigh both in the topic, and say so in your handoff.
 
-**Weigh every explanation the case's owners give.** When the people who own the case name several competing explanations for a problem, the topic weighs all of them. It doesn't pick one before the evidence does.
+**Weigh every explanation your sources give.** When your sources give several explanations for the same thing, the topic weighs all of them. It doesn't pick one before the evidence does.
 
 ## Part 6: positions
 

@@ -20,7 +20,7 @@ Here, "you" is the worker. Numbers are settings in `guide.toml`, given with thei
 
 ### The case
 
-> **To fill:** the case in three or four sentences: the situation, who is in it, and what is known and unknown. Name the context notes that hold the detail. Name any competing explanations the case's owners give for its main problem: a topic weighs all of them. Write "No case" when the guide has none.
+> **To fill:** the case in three or four sentences: the situation, who is in it, and what is known and unknown. Name the context notes that hold the detail. Write "No case" when the guide has none.
 
 ### This guide's settings
 
@@ -30,11 +30,10 @@ Here, "you" is the worker. Numbers are settings in `guide.toml`, given with thei
 
 1. **No invented facts.** Every outside claim has a source you opened in this session. Every fact about the case has a provenance tag. An unknown is an open question, with its ID from `context/open-questions.md`.
 2. **Evidence and interpretation stay apart.** The context notes are a first reading, made before anyone knew the case well. If the evidence contradicts a reading, the evidence wins. Say so in your handoff.
-3. **Weigh every explanation the case's owners give.** Don't favour one before the evidence does.
-4. **Private stays private.** A private tag sits inside a private block. A block's label and a visual's title are public text. Nothing on `context/never-publish.md` enters a topic.
-5. **One word per concept.** `context/glossary.md` is the list. Read it before you write.
-6. **Prove you can reach the web before you start.** Fetch one page you need. If the fetch fails, stop and say so in your handoff.
-7. **Write only the files your brief names. Don't run git.**
+3. **Private stays private.** A private tag sits inside a private block. A block's label and a visual's title are public text. Nothing on `context/never-publish.md` enters a topic.
+4. **One word per concept.** `context/glossary.md` is the list. Read it before you write.
+5. **Prove you can reach the web before you start.** Fetch one page you need. If the fetch fails, stop and say so in your handoff.
+6. **Write only the files your brief names. Don't run git.**
 
 ## Provenance tags
 

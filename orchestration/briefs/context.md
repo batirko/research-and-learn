@@ -38,7 +38,6 @@ Before you start, fetch one page in scope. If the fetch fails, stop and say so i
 - Sources are frozen. To keep what a page says today, add a new dated file to `context/sources/`, and its row to the list in `context/sources/README.md`. Never change an old file.
 - Record what a source says. Label what you make of it, apart.
 - When the evidence contradicts a note, the evidence wins. Correct the note, and say so in your handoff.
-- When the people who own the case give several explanations for one thing, record all of them.
 
 ## Yours to decide
 

@@ -260,8 +260,6 @@ meta_words = ["dossier", "dossiers", "topic worker", "topic workers", "review wo
 proper_nouns = []
 # Abbreviations to spell out at first use: { ABBR = "what it stands for" }.
 abbreviations = {}
-# Fail on pay and contract terms, for a guide that must never hold them.
-pay_terms = false
 # More banned words, beyond the glossary's own. Each entry has a regular
 # expression and a hint; match_case = true makes it match case. An entry under
 # lint.ban fails the lint. An entry under lint.sense warns, because the word is

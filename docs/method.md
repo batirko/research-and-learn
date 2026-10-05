@@ -116,6 +116,7 @@ Many topics have no visual. The portal's visual index shows each one with its jo
 - **Every source is opened by the session that cites it.** A link from memory or a search snippet doesn't count.
 - **Every fact about the case carries a provenance tag** that says where it came from: `[public]`, `[source: name]`, `[private: name]`, `[inference]` or `[unverified]` by default. `context/README.md` explains them, and `[[tags]]` in the settings can add more.
 - **Evidence and interpretation stay apart.** The context notes are a first reading, made before anyone knew the case well. When research contradicts them, the evidence wins, and the worker says so.
+- **Several explanations get weighed together.** When your sources give several explanations for the same thing, a topic weighs all of them. It doesn't pick one before the evidence does.
 - **Unknowns become open questions,** each with an ID such as OQ-03, its likely answers and what would settle it. They become a page the reader takes into the case.
 - **Nobody guesses about the case.** "Your association probably lends extractors" is a defect. "Whether your association lends extractors is unknown; ask the secretary before you buy one" is fine.
 - **Your sources are frozen.** Nobody edits them. When a worker finds an error in one, the correction goes into the worker pack, so every later worker sees it.
@@ -162,7 +163,6 @@ Each of these cost a run to learn.
 5. **A session that can't reach the web writes from memory.** So a researcher fetches one page it needs before it starts, and stops if the fetch fails.
 6. **An unattended run stops at the first permission prompt, and a usage limit can stop five workers at once.** So the orchestrator commits at every quiet point, and says at kickoff whether the session can work alone.
 7. **A cost projection made before any topic is written can be far off.** So the orchestrator logs each run's cost and compares it with the projection, and the plan changes before the budget runs out.
-8. **When the people who own the case name several competing explanations, a topic weighs all of them.** It doesn't pick one before the evidence does.
 
 ## Where the detail lives
 

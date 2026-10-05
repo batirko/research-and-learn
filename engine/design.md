@@ -4,7 +4,7 @@
 
 ## What the design is for
 
-A reader goes through a long guide in a few weeks, mostly on a laptop, often in a second language, against a date. Two questions drive every page: what to read next, and how much it matters. So the design serves long reading first and rank second, and everything else stays quiet.
+A reader goes through a long guide in a few weeks, mostly on a laptop, against a date. Two questions drive every page: what to read next, and how much it matters. So the design serves long reading first and rank second, and everything else stays quiet.
 
 ## Type
 

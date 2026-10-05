@@ -32,7 +32,6 @@ Fill each file as its own instructions say. This skill says what goes in, and th
 - **Every fact about the case carries a provenance tag.** The tags are in `context/README.md`.
 - **Evidence and interpretation stay apart.** Your reading of the case is a first reading, made before anyone knew the case well. It goes under its own heading.
 - **Don't guess about the case.** An unknown becomes an open question.
-- **When the people who own the case give several explanations for one thing,** record all of them, and pick none.
 - **Nothing on the never-publish list goes into a note.** A source can hold something that must never publish. Add a term for it to `context/never-publish.md`, as that file says.
 
 ## Research the case

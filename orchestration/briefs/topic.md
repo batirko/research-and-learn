@@ -48,7 +48,6 @@ Before you start, fetch one page you need. If the fetch fails, stop and say so i
 - Size {size}: aim at the middle of the band, about {n} words. The top of the band is a ceiling, not a target. {No XL. | XL granted, because {reason}.}
 - At most `materials.per_topic` materials per topic ({n}). Critical materials: at most {n} for {these topics}, within the cluster's quota in the run picture.
 - {The known errors in the sources that touch these topics, from the worker pack.}
-- {When the case's owners name several competing explanations for something your topic covers: weigh all of them, and pick none before the evidence does.}
 
 ## Yours to decide
 

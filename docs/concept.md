@@ -28,7 +28,7 @@ It fits best where general knowledge meets a specific situation. Examples: a new
 
 **The guide's own text carries the knowledge. Everything else points at it or supports it.**
 
-Before the source guide, its reader had a study plan of 201 sources. They had opened 2 when they needed them. People read explanations. So a topic explains its subject in full, and then offers a few ranked materials for depth. A long list is a failure of selection.
+A long reading list goes unread. People read explanations. So a topic explains its subject in full, and then offers a few ranked materials for depth. A long list is a failure of selection.
 
 ## What you get: the portal
 
@@ -119,7 +119,7 @@ Many topics have no visual. The portal's visual index shows each one with its jo
 - **Every source is opened by the session that cites it.** A link from memory or a search snippet doesn't count.
 - **Every fact about the case carries a provenance tag** that says where it came from. The default tags are `[public]`, `[source: name]` for a document in your sources folder, `[private: name]` for a private source, `[inference]` and `[unverified]`. You can add your own.
 - **Evidence and interpretation stay apart.** The context notes are a first reading made before you knew the case well. When research contradicts them, the evidence wins, and the worker says so.
-- **Unknowns become open questions,** each with an ID, its likely answers and what would settle it. The open questions become a page you take into your first weeks.
+- **Unknowns become open questions,** each with an ID, its likely answers and what would settle it. The open questions become a page you take into the case.
 - **Don't guess about the case.** "Your club probably uses five heart-rate zones" is a defect. "Your club's zone system is unknown; the two common ones are X and Y, and this is how to tell them apart" is fine.
 - **Your sources are frozen.** Nobody edits them. When a worker finds an error in one, the correction goes into the worker pack, so every later worker sees it.
 
@@ -172,7 +172,6 @@ Each of these cost a run to learn.
 5. **A session that can't reach the web writes from memory.** So a researcher fetches one page it needs before it starts, and stops if the fetch fails.
 6. **An unattended run stops at the first permission prompt, and a usage limit can stop five workers at once.** So the orchestrator commits at every quiet point, and says at kickoff whether the session can work alone.
 7. **Each run's token cost is logged and compared with the projection,** so the plan changes before the budget runs out.
-8. **When the people who own the case name several competing explanations, a topic weighs all of them.** It doesn't pick one before the evidence does.
 
 ## What the repository contains
 
@@ -255,7 +254,7 @@ The index has no manual entries. Its crawler finds repositories through GitHub s
 
 ## Keeping the source guide out
 
-The source guide holds private material: conversations, personal notes and facts about a specific case. None of it may reach this repository, now or later.
+The source guide holds private material about a specific case. None of it may reach this repository, now or later.
 
 ### The rule
 

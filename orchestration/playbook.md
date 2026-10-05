@@ -215,7 +215,6 @@ A brief gives a worker context, not a design.
 - Tell a worker that uses the web to fetch one page it needs before it starts, and to stop if the fetch fails. A session that can't reach the web writes from memory.
 - Give the size as "aim at the middle of the band", with the number. Grant an XL in the brief before writing, or not at all.
 - Give a topic worker its cluster's quota of critical materials, and what's used.
-- When the people who own the case name several competing explanations, the brief says to weigh all of them. A topic doesn't pick one before the evidence does.
 
 Before you start a worker, write its brief to a file in the run's folder, such as `orchestration/briefs/run-03/topic-p02.md`. Write the run picture there too. In the lean mode, the subagent's prompt points at the file. A new orchestrator can then see what each worker was asked. `orchestration/briefs/README.md` lists the templates, with a filled example of each.
 
@@ -260,7 +259,6 @@ When you reach the owner, assume they've forgotten the build's details. Lead wit
 | The frame is wrong | A handoff says the context notes don't hold | Take it seriously. The notes are a first reading, and the evidence wins. Correct them and log it |
 | A guess about the case hardens into a fact | A claim about the case without a provenance tag | The topic goes back |
 | A private fact leaks in other words | Public text, a block title or a visual title that restates a private fact | The topic goes back, and the pattern goes into the next run picture |
-| One explanation wins too early | The case's owners name several explanations, and a topic picks one | The topic goes back to weigh them all |
 | An error in a source spreads | Two workers trip on the same error | Put the correction in the worker pack |
 | Workers drift apart | One thing has two names, or two depths | Fix the glossary. Point new workers at the pilot topics |
 | One concept, two homes | Two topics explain the same thing in full | Enforce the map's homes |

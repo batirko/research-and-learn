@@ -167,7 +167,6 @@ DEFAULTS = {
                        "context worker", "topic map", "orchestrator"],
         "proper_nouns": [],
         "abbreviations": {},
-        "pay_terms": False,
         "ban": [],
         "sense": [
             {"pattern": r"\bthe guide\b", "hint": "Inside topic text, write 'this guide'."},

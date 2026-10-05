@@ -2,7 +2,7 @@
 
 What must never reach the portal, not even inside a collapsed private block. The build reads this file after every build. Its guard fails when a term appears anywhere in the portal: a page, a script, a stylesheet or a drawing. The lint fails when a term appears in a topic.
 
-A private block keeps a fact out of sight until the reader opens it. This list is for facts the reader doesn't need, or that must not travel with the portal. Examples: a remark made in confidence, a third person's private details, an address. Writers keep these facts out of every topic, and the guard catches the ones that slip through.
+A private block keeps a fact out of sight until the reader opens it. This list is for facts the reader doesn't need, or that must not travel with the portal. Examples: an address, a door code, someone else's phone number, something said in confidence. Writers keep these facts out of every topic, and the guard catches the ones that slip through.
 
 **To fill this file.** The set-up skill and the scaffold add a term whenever the owner names something that must never publish, or the sources hold one. Workers propose terms in their handoff, and the orchestrator adds them. Change nothing else in this file. Write instructions and notes as paragraphs, never as list items.
 

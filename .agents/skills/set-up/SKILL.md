@@ -66,7 +66,7 @@ Ask in this order, and skip what the first message answered.
 **6. Language, privacy and the rest.**
 
 - The language and spelling. Default: the language of the owner's messages, and its usual spelling. The portal's own labels are in English in this version.
-- Is there anything that must never reach the portal, not even in a collapsed block? Examples: a remark made in confidence, a third person's private details, an address. Default: nothing.
+- Is there anything that must never reach the portal, not even in a collapsed block? Examples: an address, a door code, someone else's phone number, something said in confidence. Default: nothing.
 - Who else will see the portal? Default: the reader alone, on their own device.
 - Anything else: length, visuals, materials they already want or don't. Default: nothing else.
 

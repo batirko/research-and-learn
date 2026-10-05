@@ -56,7 +56,6 @@ RULES = {
     "simple-easy-quick": (E, "Calls something simple, easy or quick."),
     "glossary-ban": (E, "A word the glossary bans in every sense, from its 'Don't use' column or lint.ban."),
     "never-publish": (E, "Something on the never-publish list. It never enters a topic."),
-    "pay-terms": (E, "Pay or contract terms, when lint.pay_terms is on."),
     "materials-ceiling": (E, "More materials than materials.per_topic."),
     "link-empty": (E, "A Markdown link with no target."),
     "critical-total": (E, "More critical materials across the topics than materials.critical_in_guide."),
@@ -165,9 +164,6 @@ SLOP_RE = re.compile(
 CONTRAST_RE = re.compile(
     r"\b(?:isn['’]t|is not|aren['’]t|are not|wasn['’]t|not just|not only|not merely)\b[^.!?\n]{1,70}?"
     r"[;,]\s*(?:it['’]s|it is|they['’]re|they are|but|rather|instead)\b", re.I)
-PAY_RE = re.compile(
-    r"\bsalar(?:y|ies)\b|\bpay package\b|\bsigning bonus\b|\bstock options?\b|\bRSUs?\b|\bnotice period\b|\boffer letter\b"
-    r"|\bcontract terms\b|\bprobation(?:ary)? period\b|\brelocation package\b|\bday rate\b|\bcompensation package\b|\btotal compensation\b", re.I)
 
 # Spelling. British forms on the left of each pair, American on the right. Stems end where
 # the "s" or "z" of an -ise or -ize word would sit.
@@ -856,10 +852,6 @@ class Linter:
 
     def privacy(self, u, base):
         F, S = self.F, self.S
-        if S.lint["pay_terms"]:
-            for m in PAY_RE.finditer(base):
-                line, col = where(u, m.start())
-                F.add("pay-terms", line, col, "'%s'. Pay and contract terms never enter this guide." % m.group(0))
         if S.source_words_re and not u.private and u.kind != "quote":
             for start, sent in split_sentences(base):
                 m = S.source_words_re.search(sent)
