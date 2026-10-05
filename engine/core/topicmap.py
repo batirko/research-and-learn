@@ -70,7 +70,18 @@ def parse_topic_map(S):
                 if label.lower() == "why":
                     entry["why"] = text
 
+    in_code = False
     for idx, line in enumerate(lines):
+        if line.lstrip().startswith("```"):
+            in_code = not in_code
+            if entry is not None:
+                entry["_body"].append(line)
+            continue
+        if in_code:
+            # An example in a fenced block is never a tier, a topic or a quota. In an entry, it stays text.
+            if entry is not None:
+                entry["_body"].append(line)
+            continue
         q = quota_re.match(line)
         if q and tier is None:
             quotas[q.group(1)] = int(q.group(2))
@@ -128,7 +139,7 @@ def parse_topic_map(S):
                 if not (len(entry["_body"]) == 0 and rank_line_re.match(line)):
                     entry["_body"].append(line)
             continue
-        if group is None and line.strip() and not tier["blurb"] and not line.startswith("#"):
+        if group is None and line.strip() and line.strip() != "---" and not tier["blurb"] and not line.startswith("#"):
             tier["blurb"] = line.strip()
     close_entry()
     # A tier the map doesn't list still gets its page, from the settings.
@@ -159,7 +170,13 @@ def parse_questions(S):
     group_re = re.compile(r"^## (%s.+)$" % (re.escape(word) + r" \d+: " if word else ""))
     q_re = re.compile(r"^\*\*(%s)\. (.+?)\*\*" % S.question_id_pattern)
     questions, group = {}, ""
+    in_code = False
     for line in path.read_text(encoding="utf-8").splitlines():
+        if line.lstrip().startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
         gm = group_re.match(line)
         if gm:
             group = gm.group(1)

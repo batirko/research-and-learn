@@ -70,10 +70,11 @@ def parse_term_list(text):
 
 def parse_markdown_list(text):
     """Terms from a Markdown file such as context/never-publish.md: every list item
-    under a heading that names the list. An item can sit in backticks, so Markdown
-    leaves a regular expression alone: - `re:\\bsome phrase\\b`.
+    in the file, wherever it sits, except inside a fenced code block. An item can
+    sit in backticks, so Markdown leaves a regular expression alone:
+    - `re:\\bsome phrase\\b`.
 
-    Only list items count. The prose around them explains the list."""
+    Only list items count. Paragraphs around them explain the list."""
     terms, problems = [], []
     in_code = False
     for n, line in enumerate(text.splitlines(), 1):

@@ -115,7 +115,7 @@ DEFAULTS = {
         "high": {"label": "High", "topic": "Needed to follow the core of the subject.",
                  "material": "Skim it, 10 to 15 minutes.",
                  "action": "Skim, 10 to 15 min", "reader_minutes": 15},
-        "medium": {"label": "Medium", "topic": "Useful background. It makes other topics easier.",
+        "medium": {"label": "Medium", "topic": "Useful background. It helps with other topics.",
                    "material": "Skim it faster, about 5 minutes.",
                    "action": "Skim, about 5 min", "reader_minutes": 5},
         "context": {"label": "Context",

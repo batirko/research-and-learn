@@ -136,8 +136,16 @@ def parse(S):
     lines = path.read_text(encoding="utf-8").splitlines()
     sections, cur, i = [], None, 0
     used = set()
+    in_code = False
     while i < len(lines):
         line = lines[i]
+        if line.lstrip().startswith("```"):
+            in_code = not in_code   # an example in a fenced block is not part of the glossary
+            i += 1
+            continue
+        if in_code:
+            i += 1
+            continue
         if line.startswith("## "):
             cur = {"title": line[3:].strip(), "rows": [], "notes": [], "dropped": []}
             sections.append(cur)

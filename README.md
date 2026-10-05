@@ -78,7 +78,7 @@ If your `python3` is older than 3.11, call `python3.11` instead.
 | `tools/` | The lint and the private-term scan |
 | `.claude/skills/` | Set-up, scaffold, and a pass that removes AI-sounding prose |
 
-Everything under `context/`, `curriculum/`, `content/` and `orchestration/` starts as a template with instructions. The set-up and the scaffold fill them, and your copy becomes your project. To upgrade, copy `engine/` and `tools/` from a newer release: nothing you write lives there.
+Everything under `context/`, `curriculum/`, `content/` and `orchestration/` starts as a template with instructions. The set-up and the scaffold fill them, and your copy becomes your project. To upgrade, copy `engine/` and `tools/` from a newer release: nothing you write lives there. If a portal worker changed the engine for your guide, the decision log says what, so the change can be made again after the upgrade.
 
 ## The parts worth taking even if you build guides another way
 

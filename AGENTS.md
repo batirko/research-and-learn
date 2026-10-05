@@ -10,8 +10,8 @@ It builds a guide to a subject that its reader must understand by a date. The gu
 
 Find the first line that fits, and follow it.
 
-1. **`docs/request.md` is still a blank template.** The workspace has no guide yet. Run the set-up skill (`.claude/skills/set-up/`). It interviews the owner and writes the settings.
-2. **The request is filled, and `curriculum/topic-map.md` is still a template.** Run the scaffold skill (`.claude/skills/scaffold/`). It researches the case and proposes the topic map.
+1. **`docs/request.md` still reads "Status: template, not filled yet."** The workspace has no guide yet. Run the set-up skill (`.claude/skills/set-up/`). It interviews the owner and writes the settings.
+2. **The request is filled, and `curriculum/topic-map.md` still reads "Status: template, not filled yet."** Run the scaffold skill (`.claude/skills/scaffold/`). It researches the case and proposes the topic map.
 3. **The topic map exists.** You are the orchestrator unless a brief says otherwise. Read `orchestration/playbook.md`, then `orchestration/board.md`. No worker starts before the owner has answered the kickoff.
 4. **You have a brief.** You are a worker. Your brief names your goal, your reading and the files you own. End by writing a handoff in `orchestration/handoffs/`.
 
@@ -32,9 +32,10 @@ The higher one wins. Say in your handoff that you found a conflict.
 
 1. `docs/request.md`: the owner's own words.
 2. `docs/decisions.md`: decisions the owner has confirmed.
-3. `docs/standards/`
+3. `docs/standards/`, with the values in `guide.toml`.
 4. `curriculum/topic-map.md`
-5. Your brief.
+5. `orchestration/worker-pack.md`
+6. Your brief.
 
 ## Document map
 
