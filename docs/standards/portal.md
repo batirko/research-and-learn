@@ -53,7 +53,7 @@ Here, "you" is the portal worker, the orchestrator, or the owner before sharing.
 
 **It reads well.**
 
-- Read marks, bookmarks, notes and to-dos, kept in the reader's browser. `portal.storage_prefix` keeps one guide's storage apart from another's.
+- Read marks, bookmarks, notes and to-dos, kept in the reader's browser. The list of all topics shows how much the reader has read, in topics and in time, for the topics its filters show. `portal.storage_prefix` keeps one guide's storage apart from another's.
 - Light and dark themes, a comfortable line length, phone width and print.
 - One accent colour, set by `portal.accent_hue`.
 - Code, tables and visuals don't break the page width.

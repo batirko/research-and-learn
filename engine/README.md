@@ -48,7 +48,7 @@ A missing source doesn't stop the build. An empty workspace builds a portal with
 | `index.html` | The home page text, then where to start, the tiers and the time totals |
 | `<tier>.html` | A tier: its definition, its map, its topics by group, with rank filters |
 | `<id>.html` | One page per topic in the map. A written topic shows its text; a planned one shows its plan |
-| `topics.html` | Every topic in one table |
+| `topics.html` | Every topic in one table, with filters by rank, status and tier, and the reader's progress |
 | `materials.html` | Every material from the written topics, by rank |
 | `questions.html` | The open questions, each with an anchor and the topics that cite it |
 | `glossary.html` | Every term, with its home topic and the words it replaces |

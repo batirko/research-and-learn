@@ -283,13 +283,16 @@ class Site:
             "chip": self.rank_chip(t["rank"]), "time": time, "slabel": status.capitalize(), "tier": tier,
             "marks": "".join(marks)}
 
-    def filters(self, statuses=True):
+    def filters(self, statuses=True, tiers=False):
         ranks = "".join('<button type="button" class="filter rank-%s" data-filter="rank" data-value="%s" aria-pressed="false">%s</button>'
                         % (r, r, esc(self.S.rank_label(r))) for r in ["critical", "high", "medium"])
         status = ('<span class="filters-sep" aria-hidden="true"></span>'
                   '<button type="button" class="filter" data-filter="status" data-value="written" aria-pressed="false">Written only</button>') if statuses else ""
-        return ('<div class="filters" role="group" aria-label="Filter topics"><span class="filters-label">Show</span>%s%s'
-                '<button type="button" class="filter-reset" data-filter-reset hidden>Show all</button></div>' % (ranks, status))
+        tier_buttons = ('<span class="filters-sep" aria-hidden="true"></span>' + "".join(
+            '<button type="button" class="filter" data-filter="tier" data-value="%s" aria-pressed="false">%s</button>'
+            % (t.id, esc(t.name)) for t in self.S.tiers)) if tiers and len(self.S.tiers) > 1 else ""
+        return ('<div class="filters" role="group" aria-label="Filter topics"><span class="filters-label">Show</span>%s%s%s'
+                '<button type="button" class="filter-reset" data-filter-reset hidden>Show all</button></div>' % (ranks, status, tier_buttons))
 
     def rail_for(self, tier, current):
         S = self.S
@@ -575,10 +578,12 @@ class Site:
                                          ("Ages fast" if e["ages_fast"] else "")) if x]
                     if e["updates"]:
                         notes.append("Updates " + ", ".join(e["updates"]))
-                    rows.append(('<tr data-topic-id="%s" data-rank="%s" data-status="%s"><td class="c-id">%s</td>'
+                    rows.append(('<tr data-topic-id="%s" data-rank="%s" data-status="%s" data-tier="%s"%s><td class="c-id">%s</td>'
                                  '<td class="c-title"><a href="%s">%s</a><span class="c-group">%s</span></td><td>%s</td><td>%s</td>'
                                  '<td>%s</td><td><span class="status status-%s">%s</span></td><td>%s</td><td>%s</td><td>%s</td></tr>') % (
-                        tid, t["rank"], "written" if t["written"] else "planned", tid, t["href"], esc(t["title"]), esc(g["name"]),
+                        tid, t["rank"], "written" if t["written"] else "planned", tier,
+                        (' data-minutes="%d"' % int(round(t["minutes"] or 0))) if t["written"] else "",
+                        tid, t["href"], esc(t["title"]), esc(g["name"]),
                         self.rank_chip(t["rank"]), esc(t["size"]), fmt_min(t["minutes"], approx=not t["written"]),
                         "written" if t["written"] else "planned", "Written" if t["written"] else "Planned",
                         esc(e["cluster"]), deps, esc(" · ".join(notes))))
@@ -586,13 +591,23 @@ class Site:
                        '<thead><tr><th>ID</th><th>Topic</th><th>Rank</th><th>Size</th><th>Time</th><th>Status</th><th>Cluster</th>'
                        '<th>After</th><th>Notes</th></tr></thead><tbody>%s</tbody></table></div></section>'
                        % (esc(S.tier_label(tier)), "".join(rows)))
+        # Reading progress over the written topics the filters show. Without the script it shows
+        # the totals; site.js counts the read marks and follows the filters.
+        written = [t for t in self.real_topics().values() if t["written"]]
+        stats = ('<section class="read-stats" data-read-stats aria-label="Your reading progress">'
+                 '<div class="rs-bar" aria-hidden="true"><span data-rs-bar></span></div><dl>'
+                 '<div><dt>Read</dt><dd><span data-rs-count>0</span> of <span data-rs-total>%d</span> <span data-rs-noun>%s</span></dd></div>'
+                 '<div><dt>Done</dt><dd data-rs-pct>0%%</dd></div>'
+                 '<div><dt>Time read</dt><dd data-rs-done>0 min</dd></div>'
+                 '<div><dt>Time left</dt><dd data-rs-left>%s</dd></div></dl></section>') % (
+            len(written), "topic" if len(written) == 1 else "topics", fmt_min(sum(t["minutes"] or 0 for t in written)))
         return """
 <header class="index-head">
   <h1>All topics</h1>
   <p class="lead">Every topic in the topic map, in its order. Written topics open their page. Planned topics open their entry in the map, so you can judge the plan.</p>
 </header>
-<div data-filterable>%s%s</div>
-""" % (self.filters(), "".join(out))
+<div data-filterable>%s%s%s</div>
+""" % (self.filters(tiers=True), stats, "".join(out))
 
     def materials_page(self):
         S, ctx = self.S, self.ctx()
@@ -1286,6 +1301,9 @@ class TopicRenderer:
         if p["check"]:
             inner = "<ol>%s</ol>" % "".join("<li>%s</li>" % md.inline(x, self.ctx) for x in p["check"])
             parts.append(part("check", S.parts["check"], inner, "part-check"))
+        # A second button at the end, so a reader who finishes the page marks it there.
+        parts.append('<p class="topic-actions topic-actions-end"><button type="button" class="read-toggle" data-read-toggle '
+                     'data-id="%s" aria-pressed="false">Mark as read</button></p>' % self.t["id"])
         parts.append(self.site.pager(self.t))
         has_ctx = any(s["rank"] == "context" for s in p["sections"])
         toc_html = toc_block(toc, has_ctx)

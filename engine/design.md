@@ -73,10 +73,11 @@ Visuals use the classes in `assets/visuals.css`, which read the same tokens, so 
 
 Every topic in the topic map has a page. A written topic shows its text. A planned topic shows its entry in the map, marked "Not written yet", so no link breaks and the owner can review the plan where they read.
 
-- **The masthead** holds the tiers, then the indexes, a search box and the theme switch.
+- **The masthead** holds the tiers, then the indexes, a search box and the theme switch. It stays at the top of the screen, slides away while the reader scrolls down, and comes back as soon as they scroll up. The side panels move with it, and a jump to a section never lands under it.
 - **The home page** opens with its own text at reading width, then the reading order, the tiers and the time totals at full width. The numbers never sit in the text, so they can't drift.
 - **A tier's page** opens with the owner's definition of the tier, then its map, then its topics by group, with rank filters.
-- **A topic's page** is a long document. On a wide screen it has three columns: the tier's topics, the text at 68 characters, and the contents. Narrower screens drop the topics first, then fold the contents into a closed box under the title.
+- **All topics** shows the reader's progress above the table: a bar, the topics read, the share done, the time read and the time left. It counts the written topics the filters show, so a tier filter gives one tier's progress.
+- **A topic's page** is a long document. "Mark as read" sits under the title and again at the end, before the links to the previous and next topics, so a reader who finishes the page marks it there. On a wide screen it has three columns: the tier's topics, the text at 68 characters, and the contents. Narrower screens drop the topics first, then fold the contents into a closed box under the title.
 - **The open-questions page** is a document at reading width. A link to a question lands on its band, washed in the accent.
 
 ## Notes
@@ -94,4 +95,4 @@ A page prints what the reader sees, in the light theme, whatever theme is on scr
 
 ## Motion
 
-Almost none. Opening and closing a private block is the only motion, and it stops under `prefers-reduced-motion`.
+Almost none: opening and closing a private block, and the masthead sliding away and back. Both stop under `prefers-reduced-motion`.

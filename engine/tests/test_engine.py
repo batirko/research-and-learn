@@ -106,6 +106,26 @@ class TheTestGuide(unittest.TestCase):
             self.assertIn("What the mentor keeps over winter", index)   # the label is public
 
 
+class TheReadingAids(unittest.TestCase):
+    def test_all_topics_shows_progress_and_filters_by_tier(self):
+        with Copy() as c:
+            c.build()
+            page = (c.tmp / "site" / "topics.html").read_text()
+            self.assertIn("data-read-stats", page)
+            self.assertIn('<span data-rs-total>3</span>', page)
+            for tier in ("base", "practical", "modern"):
+                self.assertIn('data-filter="tier" data-value="%s"' % tier, page)
+            self.assertIn('data-tier="base" data-minutes=', page)
+
+    def test_a_topic_has_mark_as_read_at_both_ends(self):
+        with Copy() as c:
+            c.build()
+            page = (c.tmp / "site" / "b01.html").read_text()
+            self.assertEqual(page.count("data-read-toggle"), 2)
+            self.assertIn("topic-actions-end", page)
+
+
+
 class TheSharedCopy(unittest.TestCase):
     """build.py --share: a copy without the private blocks, for sending to someone."""
 

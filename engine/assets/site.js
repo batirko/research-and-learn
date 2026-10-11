@@ -31,6 +31,13 @@
     save(KEY_READ, JSON.stringify(Object.keys(read)));
   }
 
+  /* The same format as fmt_min in core/site.py. */
+  function fmtMin(m) {
+    if (m < 60) { return m + ' min'; }
+    var h = Math.floor(m / 60), r = m % 60;
+    return h + ' h' + (r ? ' ' + r + ' min' : '');
+  }
+
   function paintRead() {
     each('[data-topic-id]', function (el) {
       el.classList.toggle('is-read', isRead(el.getAttribute('data-topic-id')));
@@ -46,18 +53,44 @@
       var n = ids.filter(isRead).length;
       p.textContent = n ? 'You have read ' + n + ' of them.' : '';
     }
+    paintStats();
+  }
+
+  /* Reading progress on All topics: the written topics that the rank and tier filters
+     show. "Written only" changes nothing here, since only written topics count. */
+  function paintStats() {
+    var rs = document.querySelector('[data-read-stats]');
+    if (!rs) { return; }
+    var count = 0, n = 0, done = 0, total = 0;
+    each('tr[data-topic-id][data-minutes]', function (row) {
+      if (row.classList.contains('is-out-of-scope')) { return; }
+      var min = parseInt(row.getAttribute('data-minutes'), 10) || 0;
+      n += 1; total += min;
+      if (isRead(row.getAttribute('data-topic-id'))) { count += 1; done += min; }
+    });
+    var pct = total ? Math.round(done * 100 / total) : 0;
+    rs.querySelector('[data-rs-count]').textContent = count;
+    rs.querySelector('[data-rs-total]').textContent = n;
+    rs.querySelector('[data-rs-noun]').textContent = n === 1 ? 'topic' : 'topics';
+    rs.querySelector('[data-rs-pct]').textContent = pct + '%';
+    rs.querySelector('[data-rs-done]').textContent = fmtMin(done);
+    rs.querySelector('[data-rs-left]').textContent = fmtMin(total - done);
+    rs.querySelector('[data-rs-bar]').style.width = pct + '%';
   }
 
   /* ---------- filters ---------- */
   function applyFilters(box) {
-    var ranks = [], writtenOnly = false;
+    var ranks = [], tiers = [], writtenOnly = false;
     each('[data-filter][aria-pressed="true"]', function (b) {
       if (b.getAttribute('data-filter') === 'rank') { ranks.push(b.getAttribute('data-value')); }
+      if (b.getAttribute('data-filter') === 'tier') { tiers.push(b.getAttribute('data-value')); }
       if (b.getAttribute('data-filter') === 'status') { writtenOnly = true; }
     }, box);
     each('[data-rank][data-status]', function (row) {
-      var out = (ranks.length && ranks.indexOf(row.getAttribute('data-rank')) < 0) ||
-                (writtenOnly && row.getAttribute('data-status') !== 'written');
+      var outOfScope = (ranks.length && ranks.indexOf(row.getAttribute('data-rank')) < 0) ||
+                       (tiers.length && tiers.indexOf(row.getAttribute('data-tier')) < 0);
+      var out = outOfScope || (writtenOnly && row.getAttribute('data-status') !== 'written');
+      row.classList.toggle('is-out-of-scope', !!outOfScope);
       row.classList.toggle('is-filtered-out', !!out);
     }, box);
     each('[data-filter-group]', function (g) {
@@ -65,8 +98,36 @@
       g.classList.toggle('is-empty', visible === 0);
     }, box);
     var reset = box.querySelector('[data-filter-reset]');
-    if (reset) { reset.hidden = !(ranks.length || writtenOnly); }
+    if (reset) { reset.hidden = !(ranks.length || tiers.length || writtenOnly); }
+    paintStats();
   }
+
+  /* ---------- masthead: hide on scroll down, show on scroll up ---------- */
+  /* Small moves are ignored so the masthead doesn't flicker. It stays in view near the
+     top of the page and while focus is inside it. --head-h is its height; --head-offset
+     is the height in view, which the sticky panels add to their own gap. */
+  (function () {
+    var head = document.querySelector('.masthead');
+    if (!head) { return; }
+    var lastY = window.scrollY, hidden = false, h = 0;
+    function paint() {
+      root.style.setProperty('--head-h', h + 'px');
+      root.style.setProperty('--head-offset', (hidden ? 0 : h) + 'px');
+      head.classList.toggle('is-hidden', hidden);
+    }
+    function measure() { h = head.offsetHeight; paint(); }
+    function update() {
+      var y = window.scrollY, dy = y - lastY;
+      if (Math.abs(dy) < 6) { return; }
+      var next = y > h && dy > 0 && !head.contains(document.activeElement);
+      lastY = y;
+      if (next !== hidden) { hidden = next; paint(); }
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    head.addEventListener('focusin', function () { if (hidden) { hidden = false; paint(); } });
+    window.addEventListener('resize', measure);
+    measure();
+  })();
 
   /* ---------- theme ---------- */
   function currentTheme() { return root.getAttribute('data-theme') || 'auto'; }
