@@ -23,6 +23,7 @@ Numbers on this page are settings. Each one names its key in `guide.toml` and gi
 | Facts check | Compares every tagged claim with its source | A smaller model |
 | Fix worker | Applies a check's findings to a topic | The strongest |
 | Integration writer | Writes the tier maps, the home page text and the open-questions page, in one voice | The strongest |
+| Concept worker | Proposes the key concepts of a set of topics, or records where each concept is used | The strongest |
 | Helper | Finds candidate sources, checks links, runs the lint | A smaller model |
 
 A **cluster** is a set of topics that one topic worker researches together, because they share sources.
@@ -48,7 +49,7 @@ Two rules keep parallel workers apart. Each worker writes only the files its bri
 | Kickoff | The orchestrator shows its assumptions and the map | Confirm or change them | The first entries in the decision log |
 | Pilot | One topic per tier, written and checked, in a portal that shows them | Read them. Say what to change about depth, length, ranks, materials, visuals and design | Settled standards, a filled worker pack |
 | Waves | Critical topics first, then high, then medium. The portal is rebuilt as each topic finishes | Start reading. Stop the build when you have enough | Topics, dossiers, reviews |
-| Integration | Tier maps, the home page text, the glossary, the open-questions page, and checks across the whole guide | Nothing | The finished portal |
+| Integration | Tier maps, the home page text, the glossary, the open-questions page, the concept map, and checks across the whole guide | Nothing | The finished portal |
 | Reading | You read, mark and note. Fixes go out in batches | Read | Your notes, in the browser |
 
 You're needed three times: at set-up, at kickoff and at the pilot review.
@@ -139,6 +140,17 @@ No script catches a private fact restated in other words. So the writer and the 
 - **One home per concept.** When several topics touch a concept, the topic map names the topic that explains it: the concept's home. The others link to it and add only what is theirs.
 - **Plain writing:** one idea per sentence, active voice, exact words for certainty, and a slop pass before every handoff. `docs/standards/writing.md` has the rules.
 
+## Key concepts
+
+The concept map shows you where each idea is explained and where it comes back. It reads `content/concepts.json`, which a concept pass writes once the topics' text has settled.
+
+- **A key concept** is an idea your goal needs and that travels across the guide. Each topic explains one to eight of them (`limits.concepts_per_topic`, default `[1, 8]`). An idea that matters in one topic only is still a concept of that topic.
+- **Its home** is the topic that explains it. It's the same home the topic map and the glossary name.
+- **A use** is a topic where the concept does work in the argument. A passing mention doesn't count. Neither does the word in its everyday sense, or a mention only in materials, exercises or a private block. The case's own nouns, such as its organisation, its people and its places, count only where a topic says something about them.
+- **The text is public.** A concept's name, definition and "how" lines show on every topic page and in a copy built to share. So they hold no fact about the case and nothing from a private source.
+
+The uses are a reading of the topics on one date. So each topic's pass leaves a fingerprint of its text, and the build names every topic that changed since. A changed topic gets a fresh pass for its concepts and uses.
+
 ## When documents disagree
 
 The higher one wins:
@@ -163,6 +175,7 @@ Each of these cost a run to learn.
 5. **A session that can't reach the web writes from memory.** So a researcher fetches one page it needs before it starts, and stops if the fetch fails.
 6. **An unattended run stops at the first permission prompt, and a usage limit can stop five workers at once.** So the orchestrator commits at every quiet point, and says at kickoff whether the session can work alone.
 7. **A cost projection made before any topic is written can be far off.** So the orchestrator logs each run's cost and compares it with the projection, and the plan changes before the budget runs out.
+8. **A concept map is a reading of the topics on one date, and it goes stale without a sign.** So every topic's concept pass is stamped, and the build names each topic that changed since.
 
 ## Where the detail lives
 
@@ -175,7 +188,7 @@ Each of these cost a run to learn.
 | `docs/standards/visuals.md` | You consider a visual |
 | `docs/standards/writing.md` | You write a sentence the reader will see |
 | `docs/standards/portal.md` | You change the portal, or check one before sharing it |
-| `engine/format.md` | You write a topic file, a tier map, the home page text or the open-questions page |
+| `engine/format.md` | You write a topic file, a tier map, the home page text, the open-questions page or the concept file |
 | `context/README.md` | You need a fact about the reader or the case |
 | `curriculum/topic-map.md` | You need to know what a topic sets out to answer, and which topic is a concept's home |
 | `orchestration/worker-pack.md` | You're a worker |

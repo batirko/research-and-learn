@@ -22,6 +22,7 @@ sys.path.insert(0, str(ENGINE))
 sys.path.insert(0, str(REPO / "tools"))
 
 import build  # noqa: E402
+import concepts as concepts_cli  # noqa: E402
 import lint  # noqa: E402
 import scan  # noqa: E402
 from core import terms  # noqa: E402
@@ -74,10 +75,11 @@ class TheTestGuide(unittest.TestCase):
         with Copy() as c:
             code, out = c.build()
             self.assertEqual(code, 0, out)
-            self.assertEqual(out.count("[pass]"), 9, out)
+            self.assertEqual(out.count("[pass]"), 10, out)
             self.assertNotIn("[FAIL]", out)
             for page in ("index.html", "base.html", "b01.html", "b02.html", "glossary.html", "visuals.html",
-                         "questions.html", "search.html", "notes.html", "assets/search-index.js"):
+                         "questions.html", "search.html", "notes.html", "concepts.html", "assets/search-index.js",
+                         "assets/conceptmap.js"):
                 self.assertTrue((c.tmp / "site" / page).exists(), page)
 
     def test_lints_clean(self):
@@ -124,6 +126,90 @@ class TheReadingAids(unittest.TestCase):
             self.assertEqual(page.count("data-read-toggle"), 2)
             self.assertIn("topic-actions-end", page)
 
+
+class TheConceptMap(unittest.TestCase):
+    CX = "content/concepts.json"
+
+    def test_every_topic_page_ends_with_its_concepts(self):
+        with Copy() as c:
+            c.build()
+            page = (c.tmp / "site" / "p01.html").read_text()
+            self.assertEqual(page.count('id="concepts-on-this-page"'), 1)
+            self.assertIn('data-cx-row="used" data-c="brood" data-from="B01"', page)
+            self.assertIn('Concept map</a>', page)
+            self.assertNotIn("Concepts on this page", (c.tmp / "site/assets/search-index.js").read_text())
+
+    def test_without_the_file_the_build_skips_the_map(self):
+        with Copy() as c:
+            c.path(self.CX).unlink()
+            code, out = c.build()
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("9. Concept map", out)
+            self.assertFalse((c.tmp / "site" / "concepts.html").exists())
+            page = (c.tmp / "site" / "b01.html").read_text()
+            self.assertNotIn("concepts-on-this-page", page)
+            self.assertNotIn("concepts.html", page)
+
+    def test_a_missing_anchor_fails_check_9(self):
+        with Copy() as c:
+            c.edit(self.CX, '"anchor": "workers-change-jobs-as-they-age"', '"anchor": "workers-retire"')
+            code, out = c.build()
+            self.assertEqual(code, 1)
+            self.assertIn("[FAIL] 9.", out)
+            self.assertIn("no anchor workers-retire", out)
+
+    def test_a_home_the_glossary_disagrees_with_fails_check_9(self):
+        with Copy() as c:
+            c.edit("context/glossary.md", "B01 is the home.", "B02 is the home.")
+            code, out = c.build()
+            self.assertEqual(code, 1)
+            self.assertIn("the glossary says B02 is the home of", out)
+
+    def test_too_many_concepts_in_a_topic_fails_check_9(self):
+        with Copy() as c:
+            c.edit("guide.toml", "[guide]", "[limits]\nconcepts_per_topic = [1, 2]\n\n[guide]")
+            code, out = c.build()
+            self.assertEqual(code, 1)
+            self.assertIn("B01 has 3 concepts, and a topic needs 1 to 2", out)
+
+    def test_a_concept_used_by_its_own_home_fails_check_9(self):
+        with Copy() as c:
+            c.edit(self.CX, '"topic": "P01",\n     "anchor": "read-a-frame-from-eggs-to-stores",\n     "how": "Reads',
+                   '"topic": "B01",\n     "anchor": "read-a-frame-from-eggs-to-stores",\n     "how": "Reads')
+            code, out = c.build()
+            self.assertEqual(code, 1)
+            self.assertIn("brood is used by its own home B01", out)
+
+    def test_a_topic_changed_since_its_pass_is_a_note_not_a_failure(self):
+        with Copy() as c:
+            c.edit(B01_MD, "A hive copies the hollow", "A box hive copies the hollow")
+            code, out = c.build()
+            self.assertEqual(code, 0, out)
+            self.assertIn("B01 changed since its concept pass", out)
+            code, out = quiet(concepts_cli.main, ["--guide", str(c.path("guide.toml")), "--stamp", "B01"])
+            self.assertEqual(code, 0, out)
+            code, out = c.build()
+            self.assertNotIn("changed since its concept pass", out)
+
+    def test_a_topic_no_pass_has_read_needs_no_concepts(self):
+        with Copy() as c:
+            c.edit(self.CX, '"id": "hive-scale",\n   "name": "hive scale",\n   "home": "M01"',
+                   '"id": "hive-scale",\n   "name": "hive scale",\n   "home": "P01"')
+            c.edit(self.CX, '"anchor": "a-scale-sees-the-nectar-flow-and-the-swarm"', '"anchor": "what-the-record-sheet-is-for"')
+            c.edit(self.CX, '  "M01": "2b9d33234a0d",\n', "")
+            code, out = c.build()
+            self.assertEqual(code, 0, out)
+            self.assertIn("No concept pass has read M01 yet.", out)
+            self.assertNotIn("concepts-on-this-page", (c.tmp / "site" / "m01.html").read_text())
+            self.assertIn("Not read for concepts yet.", (c.tmp / "site" / "concepts.html").read_text())
+
+    def test_the_lint_reads_the_concept_text(self):
+        with Copy() as c:
+            c.edit(self.CX, "Eggs, larvae and pupae, together.", "Eggs, larvae and pupae -- together.")
+            code, out = c.lint(self.CX)
+            self.assertEqual(code, 1)
+            self.assertIn("brood, definition", out)
+            self.assertIn("dash", out)
 
 
 class TheSharedCopy(unittest.TestCase):

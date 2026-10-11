@@ -4,7 +4,7 @@ A handoff is the file a worker leaves when it finishes. Every worker writes one,
 
 ## Names
 
-`{date}-{kind}-{scope}.md`, in lowercase. The kinds are `topic`, `review`, `facts`, `fix`, `context`, `portal`, `integration`, `helper` and `orchestrator`. The scope is a topic ID, a cluster or a run.
+`{date}-{kind}-{scope}.md`, in lowercase. The kinds are `topic`, `review`, `facts`, `fix`, `context`, `portal`, `integration`, `concepts`, `helper` and `orchestrator`. The scope is a topic ID, a cluster or a run.
 
 - `2026-10-06-topic-p02.md`
 - `2026-10-06-facts-run-02.md`

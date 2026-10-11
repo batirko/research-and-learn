@@ -80,6 +80,20 @@ Every topic in the topic map has a page. A written topic shows its text. A plann
 - **A topic's page** is a long document. "Mark as read" sits under the title and again at the end, before the links to the previous and next topics, so a reader who finishes the page marks it there. On a wide screen it has three columns: the tier's topics, the text at 68 characters, and the contents. Narrower screens drop the topics first, then fold the contents into a closed box under the title.
 - **The open-questions page** is a document at reading width. A link to a question lands on its band, washed in the accent.
 
+## Concept map
+
+A radial map of the guide's key concepts, with a text index under it. The map shows the web at once. The index is the page on a phone, in print and for a screen reader.
+
+- **The ring follows the topic map's order,** tier by tier. A concept sits on the outer ring under its home topic. Its label runs outward, flipped on the left half so it stays upright.
+- **A concept's rank uses the same four marks** as everywhere else.
+- **Explained and used read differently.** A curve starts at the concept, at a solid dot, and ends at each topic that uses it, at an open ring. With a concept selected, its home is a solid accent disc, and the topics that use it are accent outlines that link to the section.
+- **At rest, every curve shows in neutral grey at low opacity,** so the web is visible and the labels stay readable. A selection turns its curves to the accent and steps everything else back.
+- **The map takes the page's full width.** The selection panel floats over its right edge, and opening it pans the selected node clear of the panel.
+- **A tier filter picks the concepts that tier explains.** Their curves still run to every topic that uses them, in any tier.
+- **The index lists what each topic explains, one row per concept.** On a wide screen a row opens its concept in a panel beside the index. On a phone it opens in place.
+- **Every topic page ends with a folded "Concepts on this page" section:** what the page explains and where each is used, and what it uses from other topics.
+- **Zoom changes the drawing's viewBox,** so text stays sharp. Ctrl or Cmd with scroll, a pinch, or the buttons zoom. Plain scroll still scrolls the page.
+
 ## Notes
 
 A reader can bookmark a section or a selected sentence, add a note or a to-do to it, and add to-dos tied to no page. Everything stays in the browser. The notes page lists it all by page, with filters, and can download a copy and load one back. A note whose sentence changed in a rebuild stays on the notes page with a flag.

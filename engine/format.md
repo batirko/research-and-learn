@@ -380,6 +380,48 @@ The marker words and the headings come from `[map]` in `guide.toml`.
 
 The build reads `context/open-questions.md` for each question's ID and title only, because a question's body can hold private facts without tags. A question opens on its own line as `**OQ-01. The question?**`. A `##` heading groups the questions under it. When `map.question_groups` is set, such as to `Priority`, only questions under a `## Priority N: ...` heading count.
 
+## The concept file
+
+The concept file lists each topic's key concepts: the topic that explains each one, its home, and the topics that use it. The build draws the concept map from it and ends every topic page with that topic's concepts. It's optional. Without it, the build skips the page, its link and the sections. `docs/method.md`, "Key concepts", says what counts as a concept and as a use.
+
+It lives at `paths.concepts`, `content/concepts.json` by default. The orchestrator owns it. `engine/tests/fixture/content/concepts.json` is a small filled one.
+
+```json
+{
+ "concepts": [
+  {
+   "id": "brood-clock",
+   "name": "the brood clock",
+   "home": "B01",
+   "anchor": "the-brood-clock-sets-the-colony-s-deadlines",
+   "rank": "critical",
+   "definition": "How long each kind of bee takes from egg to emerging. It sets every deadline at the hive.",
+   "aliases": ["development times"],
+   "refs": [
+    {"topic": "P01", "anchor": "read-a-frame-from-eggs-to-stores", "how": "Dates the queen's last laying from eggs, which hatch within three days."}
+   ]
+  }
+ ],
+ "read": {"B01": "94e167193181", "P01": "dec43946c8f2"}
+}
+```
+
+- **`id`** is a short lowercase name, unique in the file. It never shows to the reader.
+- **`name`** is the concept as the guide writes it. When the glossary has the term, use the glossary's word.
+- **`home`** is the ID of the written topic that explains it. When the glossary names a home for the term, it's the same topic.
+- **`anchor`** is the section of the home topic that explains it. **`refs`** each name a topic that uses it, the one section that uses it most, and a `how` line: one sentence on what that topic does with it. A topic appears once in a concept's `refs`, and never the home.
+- **`rank`** is one of the four rank keys, for what the concept matters to the goal.
+- **`definition`** is one or two sentences for the reader. **`aliases`** are other names a reader might search for.
+- **`read`** holds a fingerprint of each topic's text from the pass that read it. Don't edit it by hand: `python3 engine/concepts.py --stamp <ID>` writes it.
+
+Every text field is plain text: no Markdown, no links, no tags. The reader sees all of it, on every topic page and in a copy built to share. So it states no fact about the case and nothing from a private source. A definition that needs one points the reader to the home section instead.
+
+**To find a section's anchor,** build into a folder of your own with `python3 engine/build.py --out <folder>`, open the topic's page, and copy the anchor from the section's link in the contents. A part's anchor, such as `why`, works too.
+
+**To see which topics changed since their pass,** run `python3 engine/concepts.py`. The build prints the same notes. Neither fails the build, because a changed topic can still have the same concepts. Once you've checked a changed topic's concepts and uses against its text, stamp it again.
+
+Check 9 checks the file against the built pages, and the lint checks its text: `python3 tools/lint.py content/concepts.json`.
+
 ## Check your file
 
 ```

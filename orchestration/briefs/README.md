@@ -27,6 +27,7 @@ Put what all the workers share in the run picture, not in each brief. A brief ke
 | `context.md` | Checking and extending the context notes | `example-context.md` |
 | `portal.md` | Changing the portal's design or the engine | `example-portal.md` |
 | `integration-writer.md` | The tier maps, the home page text and the open-questions page | `example-integration-writer.md` |
+| `concepts.md` | Proposing the key concepts of some topics, or recording where each concept is used | `example-concepts.md` |
 
 A helper gets no template. Its brief is a few lines: the goal, the files it writes, its model and its budget.
 
@@ -34,7 +35,8 @@ A helper gets no template. Its brief is a few lines: the goal, the files it writ
 
 - **Pilot:** a facts check of the context notes, when the guide has a case. Then a topic worker, a review worker and a fix worker per pilot topic. After the owner's review, an integration writer drafts the tier maps.
 - **Waves:** topic workers, then a facts check per batch, or review workers, then fix workers. A context worker when a handoff says the context notes don't hold.
-- **Integration:** an integration writer; a review worker whose scope is the whole guide; a facts check of the new pages; a fix worker. A portal worker only when the engine needs a change.
+- **Integration:** an integration writer; a review worker whose scope is the whole guide; a facts check of the new pages; a fix worker. Then the concept pass: concept workers that propose, and concept workers that record the uses. A portal worker only when the engine needs a change.
+- **After integration:** a concept worker for a topic that went live or changed after the concept pass.
 
 ## The examples
 

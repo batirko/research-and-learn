@@ -4,7 +4,7 @@
 
 {The change, in the owner's words where they gave them, and what the portal does after it.}
 
-The work is done when three things hold. A build into your own folder passes all eight checks. The change works from disk with the network off. It holds in both themes, at phone width and in print.
+The work is done when three things hold. A build into your own folder passes every check. The change works from disk with the network off. It holds in both themes, at phone width and in print.
 
 ## Why
 
@@ -28,7 +28,7 @@ You run on {the strongest model}. Your budget is about {tokens} tokens. Set the 
 - The portal opens from disk and works with the network off. Nothing loads from the network.
 - Python 3.11 or later, standard library only. Plain JavaScript, with no libraries.
 - A value that changes from one guide to another lives in `guide.toml`, with a comment.
-- The eight checks keep passing. Don't weaken a check to pass it.
+- Every check keeps passing. Don't weaken a check to pass it.
 - Private stays private: blocks closed, and out of search.
 - Every live topic still builds. A change to the format goes through the orchestrator first.
 - An upgrade replaces `engine/`. List every file you change, and why, so the change can be made again.

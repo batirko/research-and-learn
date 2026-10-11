@@ -6,7 +6,7 @@
 
 At the pilot review, Sam said: "I want one sheet I can take to the hive." Build a page that gathers the "What to check first" list from every written topic's case part. Group the lists by tier, and fit them on as few printed sheets as you can.
 
-The work is done when three things hold. A build into your own folder passes all eight checks. The page works from disk with the network off. It holds in both themes, at phone width and in print.
+The work is done when three things hold. A build into your own folder passes every check. The page works from disk with the network off. It holds in both themes, at phone width and in print.
 
 ## Why
 
@@ -30,7 +30,7 @@ You run on the strongest model. Your budget is about 200,000 tokens. Set the mod
 - The portal opens from disk and works with the network off. Nothing loads from the network.
 - Python 3.11 or later, standard library only. Plain JavaScript, with no libraries.
 - The page's title and its link text come from `guide.toml`, with a comment, because another guide names its case part differently. A guide whose `case.part` is `""` builds no such page.
-- The eight checks keep passing, and check 3 covers the new page's links. Don't weaken a check to pass it.
+- Every check keeps passing, and check 3 covers the new page's links. Don't weaken a check to pass it.
 - Private stays private. A private block on the sheet stays closed, follows the print rule in `engine/design.md`, "Print", and stays out of search.
 - Every live topic still builds, and the topic file format doesn't change.
 - An upgrade replaces `engine/`. List every file you change, and why, so the change can be made again.

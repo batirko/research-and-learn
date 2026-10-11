@@ -5,6 +5,7 @@
     python3 tools/lint.py content/practical/p01-inspecting-a-hive
     python3 tools/lint.py content/ --strict     warnings fail the run too
     python3 tools/lint.py notes/draft.md        any other .md file: prose checks only
+    python3 tools/lint.py content/concepts.json the concept file: its names, definitions and how lines
     python3 tools/lint.py --rules               every rule and its severity
 
 Exit code 0: no errors. 1: at least one error (or a warning, with --strict).
@@ -14,6 +15,10 @@ The format check, engine/topic.py, checks a topic's structure. This script
 reuses it, so a structure error appears once, as the rule "structure". It adds
 the checks of writing: dashes, words the glossary bans, first person, tags, the
 never-publish list, materials and size. Every limit comes from guide.toml.
+
+The concept file's text shows on every topic page and on the concept map, so a run
+over the whole guide lints it too, with the prose checks. A finding names the
+concept and the field instead of a line.
 
 A finding can be silenced where it is a false positive. Put a comment on the
 same line or on the line above. The build drops comments.
@@ -578,9 +583,9 @@ def where(u, idx):
 # ---------------------------------------------------------------- the checks
 
 class Linter:
-    def __init__(self, path, standalone, args, S, shaped):
+    def __init__(self, path, standalone, args, S, shaped, raw=None):
         self.path, self.standalone, self.args, self.S, self.X = path, standalone, args, S, shaped
-        raw = path.read_text(encoding="utf-8")
+        raw = path.read_text(encoding="utf-8") if raw is None else raw
         text, ignores = strip_comments(raw)
         self.lines = text.split("\n")
         header_end, self.header, title_unit = read_header(self.lines)
@@ -970,6 +975,35 @@ def lint_one(path, standalone, tmap, args, S, shaped, ids):
     return result
 
 
+def lint_concepts(path, args, S, shaped):
+    """Lint the concept file's text as prose. Each name, definition and how line becomes one
+    paragraph of a page that exists only here, and each finding names its concept and field."""
+    result = {"path": path, "standalone": True, "id": "concepts", "words": 0, "critical": 0, "cluster": None,
+              "size": None, "over_aim": 0, "suppressed": 0, "findings": []}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        result["findings"] = [{"rule": "structure", "severity": E, "line": 0, "col": 0, "where": "file",
+                               "message": "Not valid JSON: %s" % exc, "excerpt": ""}]
+        return result
+    paras, origin = [], {}
+    for c in data.get("concepts", []):
+        cid = c.get("id", "?")
+        fields = [("name", c.get("name", ""))] + [("alias", a) for a in c.get("aliases", [])]
+        fields += [("definition", c.get("definition", ""))]
+        fields += [("use in %s" % r.get("topic", "?"), r.get("how", "")) for r in c.get("refs", [])]
+        for field, text in fields:
+            text = " ".join(str(text).split())
+            if text:
+                origin[len(paras) * 2 + 1] = "%s, %s" % (cid, field)
+                paras.append(text)
+    F = Linter(path, True, args, S, shaped, raw="\n\n".join(paras)).run()
+    for f in F.items:
+        f["where"] = origin.get(f["line"], "file")
+    result["findings"], result["suppressed"] = F.items, F.suppressed
+    return result
+
+
 def cross_checks(results, quotas, S):
     """Findings about several topics together. Reported once, for all topics."""
     out = []
@@ -1035,8 +1069,12 @@ def main(argv):
         return 2
 
     paths = args.paths or [str(S.content)]
-    targets = list(find_targets(paths))
-    if not targets:
+    concept_file = S.file("concepts")
+    lint_cx = (not args.paths and concept_file.exists()) or any(
+        Path(a).resolve() == concept_file for a in args.paths)
+    paths = [a for a in paths if Path(a).resolve() != concept_file]
+    targets = list(find_targets(paths)) if paths else []
+    if not targets and not lint_cx:
         print("No topics found under %s." % ", ".join(paths))
         return 0 if not args.paths else 2
 
@@ -1044,6 +1082,8 @@ def main(argv):
     tmap = topicmap.parse_topic_map(S)
     ids = T.known_ids(S)
     results = [lint_one(p, standalone, tmap, args, S, shaped, ids) for p, standalone in targets]
+    if lint_cx:
+        results.append(lint_concepts(concept_file, args, S, shaped))
     only = set(filter(None, (args.only or "").split(",")))
     skip = set(filter(None, (args.skip or "").split(",")))
     hidden = 0
@@ -1074,7 +1114,7 @@ def main(argv):
                 print("  note: %d sentences run %d to %d words. The standard aims under %d." % (r["over_aim"], AIM_SENTENCE + 1, aim, AIM_SENTENCE))
             for f in r["findings"]:
                 tag = "ERROR  " if f["severity"] == E else "warning"
-                loc = "%d:%d" % (f["line"], f["col"]) if f["col"] else "topic"
+                loc = f.get("where") or ("%d:%d" % (f["line"], f["col"]) if f["col"] else "topic")
                 print("  %7s %s %-18s %s" % (loc, tag, f["rule"], f["message"]))
                 if f["excerpt"]:
                     print("            > %s" % f["excerpt"])

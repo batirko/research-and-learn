@@ -33,6 +33,8 @@ never_publish = "context/never-publish.md"
 content = "content"
 home = "content/home.md"
 questions_page = "content/questions.md"
+# The concept map's data. Optional: without it, the build skips the map.
+concepts = "content/concepts.json"
 # Where the build writes the portal, and where `--share` writes a copy without the
 # private blocks.
 out = "site"
@@ -123,6 +125,7 @@ check_questions = 5           # questions in "Check yourself", at most
 sentence_words = 35           # the lint warns about a longer sentence
 sentence_words_action = 30    # the same, under "What to look at first"
 paragraph_sentences = 6       # sentences in a paragraph, at most
+concepts_per_topic = [1, 8]   # key concepts a topic explains, on the concept map
 
 [materials]
 per_topic = 5                     # materials in a topic, at most

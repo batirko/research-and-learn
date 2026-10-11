@@ -81,6 +81,10 @@ def main(argv):
             print("      warning line %s: %s" % (w["line"], w["message"]))
     for prob in site.problems:
         print("  note: %s" % prob)
+    if site.concepts:
+        from core import conceptmap
+        for prob in site.concepts["problems"] + conceptmap.stale(site):
+            print("  note: %s" % prob)
 
     results = checks.run(out_dir, site)
     print("Checks:")

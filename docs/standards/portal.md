@@ -1,6 +1,6 @@
 # Standard: the portal
 
-What the portal must do, the eight checks that prove it after every build, and how you check a built portal before you share it. **The portal** is the HTML site the build makes from the guide. The design inside these limits is the portal worker's.
+What the portal must do, the checks that prove it after every build, and how you check a built portal before you share it. **The portal** is the HTML site the build makes from the guide. The design inside these limits is the portal worker's.
 
 Here, "you" is the portal worker, the orchestrator, or the owner before sharing.
 
@@ -50,6 +50,7 @@ Here, "you" is the portal worker, the orchestrator, or the owner before sharing.
 - The open-questions page, from `content/questions.md`.
 - Every material, by rank.
 - Offline search over the public text.
+- A concept map, once the guide has a concept file. It draws every topic's key concepts, each under the topic that explains it, with a link to every topic that uses it. Each topic page ends with a folded section of the same data for that page.
 
 **It reads well.**
 
@@ -65,7 +66,7 @@ Here, "you" is the portal worker, the orchestrator, or the owner before sharing.
 - **The file format changes only through the orchestrator,** because every topic worker depends on it. `engine/format.md` is its one home.
 - **Topic workers write text sources only.** A design change then never touches content, and a topic never touches shared HTML.
 
-## The eight checks
+## The checks
 
 The build runs these after every build and fails when one fails. `engine/README.md` explains each check and what to do when it fails.
 
@@ -77,6 +78,7 @@ The build runs these after every build and fails when one fails. `engine/README.
 6. **The home page totals match the pages.** Time by tier, by rank, written against planned, and materials by rank, all add up from the topic pages.
 7. **The glossary page is complete and clean.** It shows every term. Every home topic it names exists in the topic map. It shows no bookkeeping: no sentence that starts with a word in `glossary.bookkeeping`, and no decision reference such as (D12). No private source shows outside a private block, when `privacy.glossary_source` names the pattern. The home page and the open-questions page name no private source in the open either, when `privacy.page_source` names it.
 8. **The visual index is complete.** It shows every visual from the written topics and the tier maps, once each. A visual from a private block shows its title only: no drawing, caption, job statement or alt text.
+9. **The concept map matches its file.** It runs only when the guide has a concept file. Every concept's home is a written topic, and every anchor exists. Each topic a concept pass has read has as many concepts as `limits.concepts_per_topic` allows. No concept is used by its own home. A concept the glossary gives a home has the same home in the file, so the guide keeps one home per concept. The map, its index and the section that ends each topic page show every concept and every use once.
 
 **The guard** runs with them. Nothing on the never-publish list appears in any page, script, stylesheet or drawing of the portal. A list item that isn't a valid regular expression fails the guard too, because a list read in part can't be trusted.
 

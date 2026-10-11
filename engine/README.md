@@ -17,6 +17,8 @@ The engine needs Python 3.11 or later and nothing outside the standard library. 
 | List the lint's rules | `python3 tools/lint.py --rules` |
 | Build a copy to share, without the private blocks | `python3 engine/build.py --share` |
 | Scan that copy for private terms | `python3 tools/scan.py files site-share/ --terms <your list>` |
+| See which topics changed since their concept pass | `python3 engine/concepts.py` |
+| Record a concept pass for a topic | `python3 engine/concepts.py --stamp <ID>` |
 | Run the engine's tests | `python3 -m unittest discover -s engine/tests` |
 
 Every command takes `--guide <settings file>` to work on a guide whose `guide.toml` lives elsewhere. `build.py` also takes `--out <folder>`, and `--share`.
@@ -38,6 +40,7 @@ The paths come from `[paths]` in `guide.toml`. These are the defaults.
 | `context/open-questions.md` | Each question's ID and title only. A question's body can hold private facts without tags, so the build never reads it |
 | `context/glossary.md` | The glossary page |
 | `context/never-publish.md` | What the guard looks for in the built site |
+| `content/concepts.json` | The concept map, and the section that ends every topic page with its concepts, when the file exists. `engine/format.md`, "The concept file", describes it |
 
 A missing source doesn't stop the build. An empty workspace builds a portal with its tiers and no topics.
 
@@ -53,11 +56,12 @@ A missing source doesn't stop the build. An empty workspace builds a portal with
 | `questions.html` | The open questions, each with an anchor and the topics that cite it |
 | `glossary.html` | Every term, with its home topic and the words it replaces |
 | `visuals.html` | Every visual, with its job statement, linked to its section |
+| `concepts.html` | The concept map, when the guide has a concept file: every topic's key concepts on a circle, a curve from each concept to every topic that uses it, and a text index under it |
 | `search.html` | Search over the public text |
 | `notes.html` | The reader's bookmarks, notes and to-dos |
 | `assets/` | The stylesheets, the scripts and the search index |
 
-## The eight checks
+## The checks
 
 They run after every build, on what the build wrote. `docs/standards/portal.md` says why each exists.
 
@@ -69,10 +73,19 @@ They run after every build, on what the build wrote. `docs/standards/portal.md` 
 6. **The home page's totals match the pages.**
 7. **The glossary page is complete and clean.** Every term shows, every home topic exists, and no bookkeeping or private source shows in the open. The home page and the open-questions page get the same scan for private sources.
 8. **The visual index is complete.** Every visual shows once, and a private one shows its title only.
+9. **The concept map matches its file.** It runs only when the guide has a concept file. Every concept's home is a written topic, and every anchor exists on its page. Each topic a pass has read has as many concepts as `limits.concepts_per_topic` allows. No concept is used by its own home, and a concept the glossary gives a home has the same home here. The map, the index and the section at the end of every topic page show every concept and every use once.
 
 **The guard** runs last: nothing on the never-publish list may appear anywhere in the site.
 
 When a check fails, its line names the page and the problem. Fix the source and rebuild. Never edit a page in `site/`: the next build deletes it.
+
+## The concept map
+
+The build draws the map in Python, so the page needs no library. Topics sit on a ring in topic-map order, grouped by tier. Each topic's concepts sit on the outer ring, with their labels running outward. A concept is drawn once, under its home topic. Each use is a curve from that concept to the topic that uses it, bundled along the guide's own tree: topic, group, tier, centre. A use between topics of one group stays inside the group, and a use between tiers passes the centre.
+
+The page holds the drawing, the same data as JSON, and a text index. `assets/conceptmap.js` reads them and adds selection, a side panel, filters, a finder, and zoom and pan. Without the script, every concept links to its home section, every topic node links to its page, and the index shows everything. Under 40rem the map hides and the index stays.
+
+Every topic page that a concept pass has read ends with a closed "Concepts on this page" section, from the same file. Search leaves it out, because it repeats the file.
 
 ## A copy to share
 
@@ -92,6 +105,7 @@ Search runs from `assets/search-index.js`, which only the search page loads. It 
 | --- | --- |
 | `build.py` | The build: renders every page, then runs the checks |
 | `topic.py` | The format check, for one topic or one page without parts |
+| `concepts.py` | Which topics changed since their concept pass, and the command that records a pass |
 | `format.md` | The topic file format: the contract with topic writers |
 | `design.md` | The design decisions behind the look |
 | `core/settings.py` | Reads `guide.toml`, holds the defaults, builds the shared patterns |
@@ -99,9 +113,10 @@ Search runs from `assets/search-index.js`, which only the search page loads. It 
 | `core/pages.py` | Reads the pages without parts, and finds where each question opens |
 | `core/topicmap.py` | Reads the topic map and the open questions' titles |
 | `core/glossary.py` | Reads the glossary for its page and for the lint |
+| `core/conceptmap.py` | Reads the concept file, draws the concept map, and writes its index and the section that ends a topic page |
 | `core/render.py` | Renders the Markdown subset, topic links and provenance tags |
 | `core/site.py` | Renders every page and the search index |
-| `core/checks.py` | The eight checks and the guard |
+| `core/checks.py` | The checks and the guard |
 | `core/terms.py` | Term lists: the never-publish list and the private-term scan share it |
-| `assets/` | `tokens.css`, `visuals.css`, `site.css`, `site.js`, `notes.js` |
+| `assets/` | `tokens.css`, `visuals.css`, `site.css`, `site.js`, `notes.js`, `conceptmap.js` |
 | `tests/` | The tests, and the test guide they build |

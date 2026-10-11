@@ -13,7 +13,7 @@ import shutil
 from pathlib import Path
 from urllib.parse import quote
 
-from . import glossary, pages, topicmap
+from . import conceptmap, glossary, pages, topicmap
 from . import render as md
 from .settings import ENGINE, RANKS
 from .topicfile import block_text, known_ids, parse_topic
@@ -162,6 +162,7 @@ class Site:
         self.map, self.questions, self.topics, self.glossary = tmap, questions, topics, gloss
         self.groups, self.q_ctx, self.t_ctx, self.problems = groups, q_ctx, t_ctx, problems
         self.page_files, self.visuals = page_files, []
+        self.concepts = conceptmap.load(S)
         self.built = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         return self
 
@@ -195,7 +196,7 @@ class Site:
 
     # ---------------------------------------------------------------- page chrome
 
-    def page(self, title, body, kind, current_tier=None, rail="", toc="", body_attrs=None):
+    def page(self, title, body, kind, current_tier=None, rail="", toc="", body_attrs=None, scripts=()):
         S = self.S
         nav = []
         for t in S.tiers:
@@ -203,7 +204,10 @@ class Site:
             nav.append('<a href="%s.html"%s>%s</a>' % (t.id, cur, esc(t.name)))
         secondary = [("topics.html", "All topics", "topics"), ("materials.html", "Materials", "materials"),
                      ("visuals.html", "Visuals", "visuals"), ("glossary.html", "Glossary", "glossary"),
+                     ("concepts.html", "Concept map", "concepts"),
                      ("questions.html", "Open questions", "questions"), ("notes.html", "My notes", "notes")]
+        if not self.concepts:
+            secondary = [row for row in secondary if row[2] != "concepts"]
         sec = "".join('<a href="%s"%s>%s</a>' % (href, ' aria-current="page"' if kind == k else "", label)
                       for href, label, k in secondary)
         attrs = " ".join('data-%s="%s"' % (k, attr(str(v))) for k, v in (body_attrs or {}).items())
@@ -253,12 +257,13 @@ class Site:
 </footer>
 <script src="assets/notes.js"></script>
 <script src="assets/site.js"></script>
-</body>
+%(scripts)s</body>
 </html>
 """ % {"lang": attr(S.language), "title": esc(title), "config": config, "kind": kind, "attrs": attrs,
            "wordmark": esc(S.title), "nav": "".join(nav), "sec": sec, "layout": layout_cls, "rail": rail,
            "body": body, "toc": toc, "built": esc(self.built), "footer_note": footer_note, "search": search,
-           "icon": attr(favicon(S.portal["accent_hue"]))}
+           "icon": attr(favicon(S.portal["accent_hue"])),
+           "scripts": "".join('<script src="assets/%s"></script>\n' % s for s in scripts)}
 
     def topic_row(self, t, show_tier=False):
         status = "written" if t["written"] else "planned"
@@ -1020,7 +1025,7 @@ class Site:
         tokens = (ASSETS / "tokens.css").read_text(encoding="utf-8")
         tokens = re.sub(r"--hue:\s*[0-9.]+;", "--hue: %s;" % S.portal["accent_hue"], tokens, count=1)
         (assets / "tokens.css").write_text(tokens, encoding="utf-8")
-        for name in ("visuals.css", "site.css", "site.js", "notes.js"):
+        for name in ("visuals.css", "site.css", "site.js", "notes.js", "conceptmap.js"):
             shutil.copy(ASSETS / name, assets / name)
 
         def write(name, text):
@@ -1056,6 +1061,9 @@ class Site:
         self.write_search_index(out_dir, entries)
         write("glossary.html", self.page("Glossary" + suffix, self.glossary_page(), "glossary"))
         write("visuals.html", self.page("Visuals" + suffix, self.visuals_page(), "visuals"))
+        if self.concepts:
+            write("concepts.html", self.page("Concept map" + suffix, conceptmap.page_body(self), "concepts",
+                                             scripts=("conceptmap.js",)))
         return self
 
 
@@ -1301,6 +1309,11 @@ class TopicRenderer:
         if p["check"]:
             inner = "<ol>%s</ol>" % "".join("<li>%s</li>" % md.inline(x, self.ctx) for x in p["check"])
             parts.append(part("check", S.parts["check"], inner, "part-check"))
+        if self.site.concepts:
+            concepts_html, concepts_toc = conceptmap.topic_section(self.site, self.t["id"], "".join(parts))
+            if concepts_html:
+                parts.append(concepts_html)
+                toc.append(concepts_toc)
         # A second button at the end, so a reader who finishes the page marks it there.
         parts.append('<p class="topic-actions topic-actions-end"><button type="button" class="read-toggle" data-read-toggle '
                      'data-id="%s" aria-pressed="false">Mark as read</button></p>' % self.t["id"])

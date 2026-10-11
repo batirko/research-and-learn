@@ -46,6 +46,7 @@ DEFAULTS = {
         "content": "content",
         "home": "content/home.md",
         "questions_page": "content/questions.md",
+        "concepts": "content/concepts.json",
         "out": "site",
         "share_out": "site-share",
     },
@@ -98,6 +99,7 @@ DEFAULTS = {
         "sentence_words": 35,
         "sentence_words_action": 30,
         "paragraph_sentences": 6,
+        "concepts_per_topic": [1, 8],
     },
     "materials": {
         "per_topic": 5,

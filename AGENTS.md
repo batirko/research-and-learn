@@ -68,10 +68,11 @@ The engine needs Python 3.11 or later. If `python3` is older, call `python3.11`.
 | Check a topic you wrote | `python3 engine/topic.py content/<tier>/<id>-<slug>` |
 | Lint it | `python3 tools/lint.py content/<tier>/<id>-<slug>` |
 | Build the portal and run the checks (orchestrator only) | `python3 engine/build.py` |
+| See which topics changed since their concept pass | `python3 engine/concepts.py` |
 | Build a copy to share, without the private blocks | `python3 engine/build.py --share` |
 | Scan that copy before it goes to anyone | `python3 tools/scan.py files site-share/ --terms <the owner's list>` |
 
-`engine/README.md` explains the build and its eight checks.
+`engine/README.md` explains the build and its checks.
 
 ## Writing
 
@@ -91,4 +92,4 @@ If your agent can't start subagents, the playbook's full mode runs each worker a
 
 ## This repository
 
-If you are working on research-and-learn itself rather than on a guide: no file from a real guide ever enters this repository. A lesson from a real guide comes back only as a general rule, re-authored, with no fact about its case. The git hooks in `.githooks/` scan every commit and push for private terms and secrets; turn them on with `git config core.hooksPath .githooks`.
+If you are working on research-and-learn itself rather than on a guide: no file from a real guide ever enters this repository. A lesson from a real guide comes back only as a general rule, re-authored, with no fact about its case. The git hooks in `.githooks/` scan every commit and push for private terms and secrets; turn them on with `git config core.hooksPath .githooks`. `PORTING.md` records which features from the private guide this project has assessed, and what it did with each; read it before you port one.

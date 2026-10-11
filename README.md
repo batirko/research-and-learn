@@ -31,6 +31,7 @@ You get a static HTML site that opens from disk and works with the network off.
 - **Search** across the topics and the open questions. It runs in the page, from the files on disk.
 - **A glossary** with one word per concept, each linked to the topic that explains it.
 - **A visual index** of every diagram, with the job it does.
+- **A concept map** of each topic's key concepts, the topic that explains each one, and every topic that uses it.
 - **The open questions** about your case, with the topics that cite each one.
 - **Your notes.** Read marks, bookmarks, notes and to-dos stay in your browser. Download a copy to move them to another browser.
 - **A copy to share,** built without the private blocks.
@@ -61,7 +62,7 @@ The screenshots show the engine's test guide, an invented first season with bees
 
 - **Topics are plain-text files:** Markdown with a short header, and marked blocks for diagrams and private facts. `engine/format.md` has the format.
 - **`guide.toml` holds your settings:** the title, the tiers, the part headings, the size bands, the limits, the provenance tags and the accent colour.
-- **`engine/build.py` builds the portal** with Python's standard library alone. Then it runs eight checks, and the build fails if one fails:
+- **`engine/build.py` builds the portal** with Python's standard library alone. Then it runs its checks, and the build fails if one fails:
   1. Nothing loads from the network.
   2. Every topic appears in its tier, with its rank.
   3. No internal link is broken.
@@ -70,6 +71,7 @@ The screenshots show the engine's test guide, an invented first season with bees
   6. The home page's totals match the pages.
   7. The glossary is complete and shows no private source.
   8. The visual index lists every diagram once.
+  9. The concept map matches its file, once the guide has one.
 - **A guard runs last.** Nothing on your never-publish list may appear anywhere in the site.
 
 ### Rules your agent works to
@@ -133,7 +135,7 @@ If your `python3` is older than 3.11, call `python3.11` instead.
 | `curriculum/topic-map.md` | What gets built and why |
 | `orchestration/` | The orchestrator's playbook, the worker briefs, the board and the handoffs |
 | `content/` | The topics, by tier |
-| `engine/` | The build, its eight checks, the format check, the styles and the scripts |
+| `engine/` | The build, its checks, the format check, the styles and the scripts |
 | `tools/` | The lint and the private-term scan |
 | `.agents/skills/` | Set-up, scaffold, and a pass that removes AI-sounding prose. `.claude/skills` links here |
 

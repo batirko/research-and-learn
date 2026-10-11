@@ -1,0 +1,96 @@
+{
+ "concepts": [
+  {
+   "id": "brood",
+   "name": "brood",
+   "home": "B01",
+   "anchor": "one-queen-lays-and-the-workers-do-the-rest",
+   "rank": "critical",
+   "definition": "Eggs, larvae and pupae, together. How much there is, and at what stage, tells you how the colony is doing.",
+   "aliases": [
+    "eggs and larvae"
+   ],
+   "refs": [
+    {
+     "topic": "P01",
+     "anchor": "read-a-frame-from-eggs-to-stores",
+     "how": "Reads the brood on a frame to judge the queen."
+    },
+    {
+     "topic": "M01",
+     "anchor": "an-inspection-is-the-only-window-and-each-one-costs-the-colo",
+     "how": "Weighs what an inspection costs the brood against what it shows."
+    }
+   ]
+  },
+  {
+   "id": "brood-clock",
+   "name": "the brood clock",
+   "home": "B01",
+   "anchor": "the-brood-clock-sets-the-colony-s-deadlines",
+   "rank": "critical",
+   "definition": "How long each kind of bee takes from egg to emerging. It sets every deadline at the hive.",
+   "aliases": [
+    "development times"
+   ],
+   "refs": [
+    {
+     "topic": "P01",
+     "anchor": "read-a-frame-from-eggs-to-stores",
+     "how": "Dates the queen's last laying from eggs, which hatch within three days."
+    }
+   ]
+  },
+  {
+   "id": "age-jobs",
+   "name": "jobs by age",
+   "home": "B01",
+   "anchor": "workers-change-jobs-as-they-age",
+   "rank": "high",
+   "definition": "A worker moves from cleaning cells to nursing, building and guarding, and forages last.",
+   "aliases": [],
+   "refs": []
+  },
+  {
+   "id": "inspection",
+   "name": "inspection",
+   "home": "P01",
+   "anchor": "each-inspection-answers-one-question",
+   "rank": "critical",
+   "definition": "Opening a hive to look at its frames, with one question to answer each time.",
+   "aliases": [],
+   "refs": [
+    {
+     "topic": "M01",
+     "anchor": "an-inspection-is-the-only-window-and-each-one-costs-the-colo",
+     "how": "Sets a monitor against the inspection it might replace."
+    }
+   ]
+  },
+  {
+   "id": "reading-a-frame",
+   "name": "reading a frame",
+   "home": "P01",
+   "anchor": "read-a-frame-from-eggs-to-stores",
+   "rank": "high",
+   "definition": "Looking over one frame in a fixed order: eggs, larvae, sealed brood, then stores.",
+   "aliases": [],
+   "refs": []
+  },
+  {
+   "id": "hive-scale",
+   "name": "hive scale",
+   "home": "M01",
+   "anchor": "a-scale-sees-the-nectar-flow-and-the-swarm",
+   "rank": "medium",
+   "definition": "A scale under the hive that logs its weight, so you see the nectar flow and a swarm leaving.",
+   "aliases": [],
+   "refs": []
+  }
+ ],
+ "read": {
+  "B01": "94e167193181",
+  "M01": "2b9d33234a0d",
+  "P01": "dec43946c8f2"
+ }
+}

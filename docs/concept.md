@@ -235,7 +235,7 @@ research-and-learn/
 - **Python 3.11 or later, standard library only.** It reads `guide.toml` with `tomllib`.
 - **Plain JavaScript,** no libraries. Nothing loads from the network.
 - **One command builds the portal:** `python3 engine/build.py`. It fails on a format error or a failed check.
-- **Eight checks run after every build:** no network loads, every topic in its tier with its rank, no broken internal link, both themes defined, private text collapsed and out of search, totals that match, a complete glossary, and a complete visual index.
+- **Nine checks run after every build:** no network loads, every topic in its tier with its rank, no broken internal link, both themes defined, private text collapsed and out of search, totals that match, a complete glossary, a complete visual index, and a concept map that matches its file. The ninth runs once the guide has a concept file.
 - **A format check per topic** and **a lint** for the writing rules, the material limits, the tags and the glossary.
 - **A private-term scan** that reads a list of terms from a file outside the repository and searches files or git history for them. Guide owners use it before they share a built site. This repository uses it on itself.
 

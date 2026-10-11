@@ -1,4 +1,4 @@
-"""The eight checks that run after every build, and the never-publish guard.
+"""The checks that run after every build, and the never-publish guard.
 
 1. Nothing in the site loads from the network.
 2. Every topic in the content folder appears, in its tier, with its rank.
@@ -12,17 +12,25 @@
    bookkeeping and no private source in the open. The home page and the
    open-questions page show no private source in the open either.
 8. The visual index shows every visual once, and a private one by its title only.
+9. The concept map, when the guide has a concept file: every concept's home is a
+   written topic, every anchor exists, each topic a pass has read has as many
+   concepts as limits.concepts_per_topic allows, no concept is used by its own home,
+   a concept named in the glossary has the glossary's home, and the page and the
+   topic pages show every concept and every use once.
 
 The guard: nothing on the never-publish list appears anywhere in the site.
 
 engine/README.md explains each check and what to do when it fails.
 """
 
+import html
 import json
 import re
+from collections import Counter
 from html.parser import HTMLParser
 
 from . import terms as T
+from .settings import RANKS
 from .topicfile import all_block_lists, block_text, walk_blocks
 
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
@@ -253,6 +261,8 @@ def run(out_dir, site):
         results.append(check_private(out_dir, site, pages, index_text))
 
     results += checks_6_to_8(out_dir, site, pages)
+    if site.concepts is not None:
+        results.append(check_concepts(out_dir, site, pages, index_text))
     results.append(guard(out_dir, S))
     return results
 
@@ -440,6 +450,159 @@ def checks_6_to_8(out_dir, site, pages):
     results.append(("8. Visual index: every visual once, a private one by its title only", not vx_problems,
                     "; ".join(vx_problems[:6]) if vx_problems else "%d visuals, %d of them private" % (expected, n_private)))
     return results
+
+
+def term_key(text):
+    return re.sub(r"\s+", " ", re.sub(r"[*_`]", "", text)).strip().lower()
+
+
+def check_concepts(out_dir, site, pages, index_text):
+    """9. The concept map and the section that ends every topic page match the concept file."""
+    S, cm = site.S, site.concepts
+    problems = list(cm["problems"])
+    concepts, read = cm["concepts"], cm["read"]
+    low, high = S.limits["concepts_per_topic"]
+    glossary_homes = {}
+    for sec in site.glossary or []:
+        for row in sec["rows"]:
+            if row["homes"]:
+                glossary_homes[term_key(row["use"])] = (row["use"], row["homes"])
+
+    def written(tid):
+        t = site.topics.get(tid)
+        return t if t and t["written"] and t["map"] is not None else None
+
+    seen, per_topic, want_refs = set(), Counter(), []
+    for c in concepts:
+        cid = c["id"]
+        if not cid or cid in seen:
+            problems.append("concept id %r is empty or appears twice" % cid)
+        seen.add(cid)
+        if c["rank"] not in RANKS:
+            problems.append("%s has rank %r" % (cid, c["rank"]))
+        if not c["name"] or not c["definition"]:
+            problems.append("%s has no name or no definition" % cid)
+        home = written(c["home"])
+        if home is None:
+            problems.append("%s: its home %s isn't a written topic in the topic map" % (cid, c["home"]))
+        else:
+            per_topic[c["home"]] += 1
+            hp = pages.get(home["href"])
+            if hp is None or c["anchor"] not in hp.ids:
+                problems.append("%s: no anchor %s on %s" % (cid, c["anchor"], home["href"]))
+        for name in [c["name"]] + c["aliases"]:
+            g = glossary_homes.get(term_key(name))
+            if g and c["home"] not in g[1]:
+                problems.append("%s: the glossary says %s is the home of %s" % (cid, " or ".join(g[1]), g[0]))
+        targets = set()
+        for r in c["refs"]:
+            want_refs.append((cid, r["topic"]))
+            if r["topic"] == c["home"]:
+                problems.append("%s is used by its own home %s" % (cid, c["home"]))
+            if r["topic"] in targets:
+                problems.append("%s is used by %s twice" % (cid, r["topic"]))
+            targets.add(r["topic"])
+            t = written(r["topic"])
+            if t is None:
+                problems.append("%s: a use in %s, which isn't a written topic in the topic map" % (cid, r["topic"]))
+            else:
+                tp = pages.get(t["href"])
+                if tp is None or r["anchor"] not in tp.ids:
+                    problems.append("%s: no anchor %s on %s" % (cid, r["anchor"], t["href"]))
+            if not r["how"]:
+                problems.append("%s: its use in %s has no how line" % (cid, r["topic"]))
+    for tid in read:
+        if written(tid) is None:
+            problems.append("the file says a pass read %s, which isn't a written topic in the topic map" % tid)
+    # A topic no pass has read yet may have no concepts. A topic a pass has read needs its share.
+    covered = [tid for tid in site.map["order"] if written(tid) and (tid in read or per_topic[tid])]
+    for tid in covered:
+        if not low <= per_topic[tid] <= high:
+            problems.append("%s has %d concepts, and a topic needs %d to %d" % (tid, per_topic[tid], low, high))
+
+    page = out_dir / "concepts.html"
+    if not page.exists():
+        problems.append("concepts.html is missing")
+    else:
+        text = page.read_text(encoding="utf-8")
+        want_c = Counter(html.escape(c["id"]) for c in concepts if written(c["home"]))
+        want_r = Counter((html.escape(a), b) for a, b in want_refs)
+
+        def same(label, pattern, want):
+            have = Counter(re.findall(pattern, text))
+            if have != want:
+                problems.append("%s: %d shown, %d in the file (missing %s, extra %s)" % (
+                    label, sum(have.values()), sum(want.values()),
+                    sorted((want - have).keys())[:3], sorted((have - want).keys())[:3]))
+        same("map leaves", r'<a class="cx-leaf" [^>]*?data-c="([^"]*)"', want_c)
+        same("map curves", r'<path class="cx-ref" data-from="([^"]*)" data-to="([^"]*)"',
+             Counter({k: v for k, v in want_r.items() if html.unescape(k[0]) in {c["id"] for c in concepts if written(c["home"])}}))
+        same("index concepts", r'<li class="cx-concept" id="[^"]*" data-c="([^"]*)"', want_c)
+        same("index uses", r'<a class="cx-use" data-for="([^"]*)" data-topic="([^"]*)"',
+             Counter({k: v for k, v in want_r.items() if html.unescape(k[0]) in {c["id"] for c in concepts if written(c["home"])}}))
+        home_of = {html.escape(c["id"]): c["home"] for c in concepts}
+        for sec in re.finditer(r'<article class="cx-topic-sec[^"]*" id="cx-[^"]*" data-cx-topic="([^"]*)"(.*?)</article>', text, re.S):
+            for cid in re.findall(r'<li class="cx-concept" id="[^"]*" data-c="([^"]*)"', sec.group(2)):
+                if home_of.get(cid) != sec.group(1):
+                    problems.append("the index lists %s under %s, which isn't its home" % (cid, sec.group(1)))
+        blob = re.search(r'<script type="application/json" id="cx-data">(.*?)</script>', text, re.S)
+        try:
+            payload = json.loads(blob.group(1))
+            if len(payload["concepts"]) != len(concepts) or sum(len(r[7]) for r in payload["concepts"]) != len(want_refs):
+                problems.append("the page's data differs from the concept file")
+        except (AttributeError, ValueError, KeyError):
+            problems.append("the page's data is missing or unreadable")
+
+    # Every covered topic page ends with the folded section, and its tables match the file.
+    for tid in covered:
+        t = written(tid)
+        path = out_dir / t["href"]
+        if not path.exists():
+            continue
+        ptext = path.read_text(encoding="utf-8")
+        if ptext.count('id="concepts-on-this-page"') != 1 or 'href="#concepts-on-this-page"' not in ptext:
+            problems.append("%s: the concepts section must appear once, with an entry in the contents" % tid)
+            continue
+        if re.search(r'<details class="cx-fold"[^>]*\sopen\b', ptext):
+            problems.append("%s: the concepts section starts open" % tid)
+        sec_text = ptext[ptext.index('id="concepts-on-this-page"'):]
+        own = {c["id"]: c for c in concepts if c["home"] == tid}
+        uses = [(c, r) for c in concepts for r in c["refs"] if r["topic"] == tid]
+        rows = re.findall(r'<tr data-cx-row="explained" data-c="([^"]*)"><td>.*?</td><td><a class="cx-tname" href="#([^"]*)">(.*?)</a></td><td>(.*?)</td></tr>', sec_text, re.S)
+        if Counter(html.unescape(r[0]) for r in rows) != Counter(own.keys()):
+            problems.append("%s: the explained table shows %d concepts, the file has %d" % (tid, len(rows), len(own)))
+        for cid, anchor, name, cell in rows:
+            c = own.get(html.unescape(cid))
+            if c is None:
+                continue
+            if html.unescape(anchor) != c["anchor"] or html.unescape(name) != c["name"]:
+                problems.append("%s: the explained row for %s links to the wrong section" % (tid, c["id"]))
+            want = Counter((r["topic"], r["anchor"], r["how"]) for r in c["refs"])
+            have = Counter((m.group(1), html.unescape(m.group(2)).split("#", 1)[1], html.unescape(m.group(3)))
+                           for m in re.finditer(r'<a class="cx-tuse" data-for="[^"]*" data-topic="([^"]*)" href="([^"]*)" title="([^"]*)"', cell))
+            if want != have:
+                problems.append("%s: the explained row for %s lists the wrong uses" % (tid, c["id"]))
+        urows = re.findall(r'<tr data-cx-row="used" data-c="([^"]*)" data-from="([^"]*)"><td>.*?</td><td>.*?</td><td><a class="cx-tsec" href="#([^"]*)">.*?</a></td><td>(.*?)</td><td><a class="cx-thome" href="([^"]*)">', sec_text, re.S)
+        have = Counter((html.unescape(r[0]), html.unescape(r[2]), html.unescape(r[3])) for r in urows)
+        if have != Counter((c["id"], r["anchor"], r["how"]) for c, r in uses):
+            problems.append("%s: the used table shows %d rows, the file has %d, or a row differs" % (tid, len(urows), len(uses)))
+        by_id = {c["id"]: c for c in concepts}
+        for r in urows:
+            c = by_id.get(html.unescape(r[0]))
+            if c and (c["home"] != r[1] or not html.unescape(r[4]).endswith("#" + c["anchor"])):
+                problems.append("%s: the used row for %s names the wrong home" % (tid, c["id"]))
+        if bool(uses) == ('data-cx-table="none"' in sec_text):
+            problems.append("%s: the section says %s, and the file disagrees" % (
+                tid, "it uses nothing from other topics" if uses else "it uses concepts from other topics"))
+    # Search leaves the section out: it repeats the concept file.
+    if index_text and ("cx-ttable" in index_text or "Concepts on this page" in index_text):
+        problems.append("the search index holds the concepts section")
+
+    n_refs = len(want_refs)
+    return ("9. Concept map: every home written, every anchor found, %d to %d concepts a topic, no use by its own home, "
+            "homes agree with the glossary, every concept and use shown once" % (low, high),
+            not problems, "; ".join(problems[:6]) if problems else "%d concepts, %d uses, %d topics" % (
+                len(concepts), n_refs, len(covered)))
 
 
 def guard(out_dir, S):

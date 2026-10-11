@@ -32,7 +32,7 @@ If one is missing, run the skill that writes it. Then start at the kickoff.
 | Kickoff | You put the kickoff questions and record the answers | Confirms or changes |
 | Pilot | One topic per tier, written, checked and built | Reads them, and answers six questions |
 | Waves | Critical topics, then high, then medium, built as each finishes | Starts reading. Can stop the build |
-| Integration | Tier maps, the home page, the open-questions page, and checks across the guide | Nothing |
+| Integration | Tier maps, the home page, the open-questions page, the concept map, and checks across the guide | Nothing |
 | Reading | Fixes go out in batches | Reads, marks and notes |
 
 The owner is needed at three points: the set-up, the kickoff and the pilot. Bring any other question only when a wrong guess would waste a worker's run.
@@ -83,7 +83,7 @@ One workable order:
 2. One topic worker per pilot topic, all at once.
 3. One review worker per pilot topic, in both modes.
 4. A fix worker applies each review.
-5. You build the portal and run the eight checks.
+5. You build the portal and run the checks.
 6. **Stop.** The owner reads the pilot topics in the portal.
 
 Ask the owner about six things: the depth, the length, the ranks, the materials, each visual, and the design. Then change what their answers change:
@@ -119,9 +119,23 @@ Integration ties the guide together and checks it as a whole.
 | Check every fact about the case on the new pages | A facts check |
 | Apply the findings to topics | A fix worker |
 | Finish the glossary: a home for every row, and the terms the handoffs proposed | You, or one worker you give the glossary to for that task |
-| Build, and run the eight checks | You |
+| The concept pass, once the fixes have landed | Concept workers, then you. See below |
+| Build, and run the checks | You |
 
 **Why the materials pass exists.** Writers judge critical materials one cluster at a time, and they pick too few. Each holds a slot for a sibling topic, and the sibling does the same. One pass across the guide finds the originals the reader will work from.
+
+## The concept pass
+
+The concept pass writes `content/concepts.json`, the data behind the concept map and the section that ends each topic page. `docs/method.md`, "Key concepts", says what counts. Run it once the topics' text has settled, because the uses are a reading of the text as it is.
+
+1. **Propose.** Concept workers, one per cluster or a few topics each, propose each topic's concepts into `research/`. Their briefs seed them with the glossary's homes and the topic map's home table.
+2. **Merge.** You merge the proposals into one list in `research/concepts-merged.md`. Keep the ideas the reader's goal needs and that travel across the guide. Merge two names for one idea, and use the glossary's word. Keep each topic within `limits.concepts_per_topic`. Then write the concepts into `content/concepts.json`, with no uses yet.
+3. **Record the uses.** Concept workers, each with a batch of topics, read their topics against the merged list and record the uses into `research/`.
+4. **Finish.** You write the uses into the file and stamp every topic a pass read: `python3 engine/concepts.py --stamp <IDs>`. Build, and read check 9. Lint the file: `python3 tools/lint.py content/concepts.json`.
+
+`briefs/concepts.md` is the template for both kinds of concept worker.
+
+**After the pass.** The build notes each topic that changed since its pass, and each written topic no pass has read. Neither fails the build. Give such a topic a concept worker of its own: its concepts, its uses of the others, and the other topics' uses of its new concepts. Then stamp it. A fix that only corrects a fact or a word needs no new pass. Check the topic's concepts against the change, then stamp it.
 
 ## Reading
 
@@ -138,7 +152,8 @@ Before the owner shares the portal, build a copy without the private blocks, `py
 | The lint | `python3 tools/lint.py <paths>`: the writing rules, the material limits, the tags and the glossary | The topic worker, then you |
 | The facts check | Every tagged claim against its source | A facts check. Lean mode: topics, a batch at a time. Both modes: the context notes before the pilot, and the integration pages |
 | The independent review | A reader who didn't write the topic, then the standards | A review worker. Lean: the pilot and the topics that rest most on the case. Full: every topic |
-| The build | `python3 engine/build.py`: the portal, the eight checks and the never-publish guard | You, each time a topic goes live |
+| The build | `python3 engine/build.py`: the portal, the checks and the never-publish guard | You, each time a topic goes live |
+| The concept notes | `python3 engine/concepts.py`: the topics that changed since their concept pass | You, after a fix lands on a topic a pass has read |
 
 A topic that fails a check goes to a fix worker with the findings.
 
@@ -153,6 +168,7 @@ A topic that fails a check goes to a fix worker with the findings.
 | Context worker | Checks and extends the context notes | The strongest | `briefs/context.md` |
 | Portal worker | Changes the portal's design or the engine | The strongest | `briefs/portal.md` |
 | Integration writer | Writes the tier maps, the home page text and the open-questions page | The strongest | `briefs/integration-writer.md` |
+| Concept worker | Proposes the key concepts of some topics, or records where each concept is used | The strongest | `briefs/concepts.md` |
 | Helper | Finds candidate sources, checks links, runs the lint and counts | A smaller model | None. Its brief is a goal, its files, its model and its budget |
 
 A worker is a subagent in the lean mode and a session in the full mode. The templates serve both.
@@ -163,10 +179,11 @@ Workers share one folder, with no worktrees. That works only when no two workers
 
 | Path | Who writes it |
 | --- | --- |
-| `orchestration/board.md`, `docs/decisions.md`, `docs/request.md`, `curriculum/topic-map.md`, `context/glossary.md`, `context/open-questions.md`, `context/never-publish.md`, `orchestration/worker-pack.md`, `docs/standards/`, `guide.toml`, `orchestration/briefs/` | You. You can give one of them to one worker for one task, and the brief says so |
+| `orchestration/board.md`, `docs/decisions.md`, `docs/request.md`, `curriculum/topic-map.md`, `context/glossary.md`, `context/open-questions.md`, `context/never-publish.md`, `orchestration/worker-pack.md`, `docs/standards/`, `guide.toml`, `orchestration/briefs/`, `content/concepts.json` | You. You can give one of them to one worker for one task, and the brief says so |
 | Other notes in `context/` | You, or a context worker you assign |
 | `context/sources/`, `reference/` | Nobody changes a file there. A context worker can add a new dated file, and its row in `context/sources/README.md` |
 | `research/<id>-<slug>.md`, `content/<tier>/<id>-<slug>/` | The topic worker that has the topic, then the fix worker a brief names |
+| `research/concepts-*.md`, `research/concept-uses-*.md` | The concept worker a brief names |
 | `reviews/` | The review worker or the facts check that writes the file |
 | `content/<tier>/intro.md`, `content/home.md`, `content/questions.md` | The integration writer |
 | `engine/`, `tools/` | A portal worker |
